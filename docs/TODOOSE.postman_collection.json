@@ -1,29 +1,18 @@
 {
 	"info": {
-		"_postman_id": "77907098-6df0-4079-ba5f-123133196cdd",
-		"name": "TODOOSE",
+		"_postman_id": "9a231aeb-d2f2-4f87-82a4-5b86f9697b91",
+		"name": "foodaholic",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "Get TODO items",
+			"name": "User signup Copy",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
-						"id": "1fd2ce41-9164-4ba6-9279-2c10ad933cd6",
+						"id": "1f28be8a-b12f-4544-ab1f-05458edd4a96",
 						"exec": [
-							"pm.test(\"Status code is 200\", () => {",
-							"    pm.response.to.have.status(200);",
-							"});",
-							"pm.test(\"Response JSON is a list\", () => {",
-							"    pm.expect(pm.response.json()).to.be.an(\"array\");",
-							"});",
-							"pm.test(\"Items have identifier and description\", () => {",
-							"    pm.response.json().forEach(item => {",
-							"        pm.expect(item).to.have.all.keys(\"identifier\", \"description\");",
-							"    });",
-							"});",
 							""
 						],
 						"type": "text/javascript"
@@ -32,81 +21,7 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "4f997152-b08a-4810-8647-2f1238960c07",
-						"exec": [
-							"pm.sendRequest({ url: \"http://localhost:7000/items\", method: \"POST\" });"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:7000/items",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "7000",
-					"path": [
-						"items"
-					]
-				}
-			},
-			"response": [
-				{
-					"name": "Successful",
-					"originalRequest": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost/items",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"path": [
-								"items"
-							]
-						}
-					},
-					"status": "OK",
-					"code": 200,
-					"_postman_previewlanguage": "json",
-					"header": [],
-					"cookie": [],
-					"body": "[\n\t{\"identifier\": 1, \"description\": \"Read TODO items\"},\n\t{\"identifier\": 2, \"description\": \"Create new TODO items\"},\n\t{\"identifier\": 3, \"description\": \"Edit TODO item\"},\n\t{\"identifier\": 4, \"description\": \"Mark items as DONE\"}\n]\n"
-				}
-			]
-		},
-		{
-			"name": "Create new TODO item",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"id": "31bba8ee-2938-4282-be95-0d30dd5be307",
-						"exec": [
-							"pm.test(\"Status code is 201\", () => {",
-							"    pm.response.to.have.status(201);",
-							"});",
-							"pm.test(\"Identifiers are always increasing\", () => {",
-							"    pm.sendRequest(\"http://localhost:7000/items\", (err, response) => {",
-							"        const identifiers = response.json().map(item => item.identifier).reverse();",
-							"        pm.expect(identifiers[0]).to.be.equal(identifiers[1] + 1);",
-							"    });",
-							"});",
-							""
-						],
-						"type": "text/javascript"
-					}
-				},
-				{
-					"listen": "prerequest",
-					"script": {
-						"id": "76cc81c7-59ab-4d79-aff0-20b9817df1e4",
+						"id": "1f042eff-532a-4075-84f7-e8397e6b5393",
 						"exec": [
 							""
 						],
@@ -119,17 +34,28 @@
 				"header": [],
 				"body": {
 					"mode": "formdata",
-					"formdata": []
+					"formdata": [
+						{
+							"key": "email",
+							"value": "testUser",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "testPassword",
+							"type": "text"
+						}
+					]
 				},
 				"url": {
-					"raw": "http://localhost:7000/items",
+					"raw": "http://localhost:4000/users",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "7000",
+					"port": "4000",
 					"path": [
-						"items"
+						"users"
 					]
 				}
 			},
@@ -137,100 +63,18 @@
 				{
 					"name": "Successful",
 					"originalRequest": {
-						"method": "POST",
+						"method": "PUT",
 						"header": [],
 						"body": {
 							"mode": "formdata",
-							"formdata": []
-						},
-						"url": {
-							"raw": "http://localhost/items",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"path": [
-								"items"
+							"formdata": [
+								{
+									"key": "description",
+									"value": "whatever",
+									"type": "text"
+								}
 							]
-						}
-					},
-					"status": "Created",
-					"code": 201,
-					"_postman_previewlanguage": "json",
-					"header": [],
-					"cookie": [],
-					"body": ""
-				}
-			]
-		},
-		{
-			"name": "Mark item as done",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"id": "1f28be8a-b12f-4544-ab1f-05458edd4a96",
-						"exec": [
-							"pm.test(\"Status code is 204\", () => {",
-							"    pm.response.to.have.status(204);",
-							"});",
-							"",
-							"pm.test(\"Item is deleted\", () => {",
-							"    pm.sendRequest(\"http://localhost:7000/items\", (err, response) => {",
-							"        pm.expect(",
-							"            response.json().map(item => item.identifier)",
-							"        ).to.not.include(parseInt(pm.environment.get(\"itemIdentifier\")));",
-							"    });",
-							"});",
-							"",
-							"pm.test(\"Status code is 404 if item isn’t found\", () => {",
-							"    pm.sendRequest({ url: \"http://localhost:7000/items/51039\", method: \"DELETE\" }, (err, response) => {",
-							"        pm.expect(response).to.have.status(404);",
-							"    });",
-							"});",
-							""
-						],
-						"type": "text/javascript"
-					}
-				},
-				{
-					"listen": "prerequest",
-					"script": {
-						"id": "1f042eff-532a-4075-84f7-e8397e6b5393",
-						"exec": [
-							"pm.sendRequest({ url: \"http://localhost:7000/items\", method: \"POST\" }, () => {",
-							"    pm.sendRequest(\"http://localhost:7000/items\", (err, response) => {",
-							"        pm.environment.set(\"itemIdentifier\", response.json().last().identifier);",
-							"    });",
-							"});",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:7000/items/{{itemIdentifier}}",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "7000",
-					"path": [
-						"items",
-						"{{itemIdentifier}}"
-					]
-				}
-			},
-			"response": [
-				{
-					"name": "Successful",
-					"originalRequest": {
-						"method": "DELETE",
-						"header": [],
+						},
 						"url": {
 							"raw": "http://localhost:7000/items/7",
 							"protocol": "http",
@@ -254,28 +98,13 @@
 			]
 		},
 		{
-			"name": "Edit item",
+			"name": "User login Copy",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"id": "1f28be8a-b12f-4544-ab1f-05458edd4a96",
 						"exec": [
-							"pm.test(\"Status code is 204\", () => {",
-							"    pm.response.to.have.status(204);",
-							"});",
-							"",
-							"pm.test(\"Item is edited\", () => {",
-							"    pm.sendRequest(\"http://localhost:7000/items\", (err, response) => {",
-							"        pm.expect(response.json().last().description).to.equal(\"some description\");",
-							"    });",
-							"});",
-							"",
-							"pm.test(\"Status code is 404 if item isn’t found\", () => {",
-							"    pm.sendRequest({ url: \"http://localhost:7000/items/51039\", method: \"PUT\" }, (err, response) => {",
-							"        pm.expect(response).to.have.status(404);",
-							"    });",
-							"});",
 							""
 						],
 						"type": "text/javascript"
@@ -286,11 +115,6 @@
 					"script": {
 						"id": "1f042eff-532a-4075-84f7-e8397e6b5393",
 						"exec": [
-							"pm.sendRequest({ url: \"http://localhost:7000/items\", method: \"POST\" }, () => {",
-							"    pm.sendRequest(\"http://localhost:7000/items\", (err, response) => {",
-							"        pm.environment.set(\"itemIdentifier\", response.json().last().identifier);",
-							"    });",
-							"});",
 							""
 						],
 						"type": "text/javascript"
@@ -298,28 +122,33 @@
 				}
 			],
 			"request": {
-				"method": "PUT",
+				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "formdata",
 					"formdata": [
 						{
-							"key": "description",
-							"value": "some description",
+							"key": "email",
+							"value": "testUser",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "testPassword",
 							"type": "text"
 						}
 					]
 				},
 				"url": {
-					"raw": "http://localhost:7000/items/{{itemIdentifier}}",
+					"raw": "http://localhost:4000/users/login",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "7000",
+					"port": "4000",
 					"path": [
-						"items",
-						"{{itemIdentifier}}"
+						"users",
+						"login"
 					]
 				}
 			},
