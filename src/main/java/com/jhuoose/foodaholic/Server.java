@@ -19,12 +19,10 @@ public class Server {
             event.serverStopped(() -> { connection.close(); });
         })
         .routes(() -> {
-            path("items", () -> {
-                get(userController::getAll);
-                post(userController::create);
-                path(":identifier", () -> {
-                    delete(userController::delete);
-                    put(userController::update);
+            path("users", () -> {
+                post(userController::register);
+                path("login", () -> {
+                    post(userController::login);
                 });
             });
         })

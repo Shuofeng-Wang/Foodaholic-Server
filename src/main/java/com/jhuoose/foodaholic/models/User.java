@@ -1,27 +1,27 @@
 package com.jhuoose.foodaholic.models;
 
 public class User {
-    private int identifier;
-    private String description;
+    private String email;
+    private String password;
 
-    public User(int identifier, String description) {
-        this.identifier = identifier;
-        this.description = description;
+    public User(String email, String password) {
+        this.email = email;
+        this.password = password;
     }
 
-    public int getIdentifier() {
-        return identifier;
+    public String getEmail() {
+        return email;
     }
 
-    public void setIdentifier(int identifier) {
-        this.identifier = identifier;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public String getDescription() {
-        return description;
+    public String getPassword() {
+        return password;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
