@@ -1,10 +1,10 @@
-package com.jhuoose.todoose.models;
+package com.jhuoose.foodaholic.models;
 
-public class Item {
+public class User {
     private int identifier;
     private String description;
 
-    public Item(int identifier, String description) {
+    public User(int identifier, String description) {
         this.identifier = identifier;
         this.description = description;
     }

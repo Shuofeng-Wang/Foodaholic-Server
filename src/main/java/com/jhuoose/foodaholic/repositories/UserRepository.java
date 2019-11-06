@@ -1,29 +1,29 @@
-package com.jhuoose.todoose.repositories;
+package com.jhuoose.foodaholic.repositories;
 
-import com.jhuoose.todoose.models.Item;
+import com.jhuoose.foodaholic.models.User;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemsRepository {
+public class UserRepository {
     private Connection connection;
 
-    public ItemsRepository(Connection connection) throws SQLException {
+    public UserRepository(Connection connection) throws SQLException {
         this.connection = connection;
         var statement = connection.createStatement();
         statement.execute("CREATE TABLE IF NOT EXISTS items (identifier INTEGER PRIMARY KEY AUTOINCREMENT, description TEXT)");
         statement.close();
     }
 
-    public List<Item> getAll() throws SQLException {
-        var items = new ArrayList<Item>();
+    public List<User> getAll() throws SQLException {
+        var items = new ArrayList<User>();
         var statement = connection.createStatement();
         var result = statement.executeQuery("SELECT identifier, description FROM items");
         while (result.next()) {
             items.add(
-                new Item(
+                new User(
                     result.getInt("identifier"),
                     result.getString("description")
                 )
@@ -34,18 +34,18 @@ public class ItemsRepository {
         return items;
     }
 
-    public Item getOne(int identifier) throws SQLException, ItemNotFoundException {
+    public User getOne(int identifier) throws SQLException, UserNotFoundException {
         var statement = connection.prepareStatement("SELECT identifier, description FROM items WHERE identifier = ?");
         statement.setInt(1, identifier);
         var result = statement.executeQuery();
         try {
             if (result.next()) {
-                return new Item(
+                return new User(
                         result.getInt("identifier"),
                         result.getString("description")
                 );
             } else {
-                throw new ItemNotFoundException();
+                throw new UserNotFoundException();
             }
         }
         finally {
@@ -60,23 +60,23 @@ public class ItemsRepository {
         statement.close();
     }
 
-    public void update(Item item) throws SQLException, ItemNotFoundException {
+    public void update(User user) throws SQLException, UserNotFoundException {
         var statement = connection.prepareStatement("UPDATE items SET description = ? WHERE identifier = ?");
-        statement.setString(1, item.getDescription());
-        statement.setInt(2, item.getIdentifier());
+        statement.setString(1, user.getDescription());
+        statement.setInt(2, user.getIdentifier());
         try {
-            if (statement.executeUpdate() == 0) throw new ItemNotFoundException();
+            if (statement.executeUpdate() == 0) throw new UserNotFoundException();
         }
         finally {
             statement.close();
         }
     }
 
-    public void delete(Item item) throws SQLException, ItemNotFoundException {
+    public void delete(User user) throws SQLException, UserNotFoundException {
         var statement = connection.prepareStatement("DELETE FROM items WHERE identifier = ?");
-        statement.setInt(1, item.getIdentifier());
+        statement.setInt(1, user.getIdentifier());
         try {
-            if (statement.executeUpdate() == 0) throw new ItemNotFoundException();
+            if (statement.executeUpdate() == 0) throw new UserNotFoundException();
         }
         finally {
             statement.close();

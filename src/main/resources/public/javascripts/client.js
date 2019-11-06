@@ -2,10 +2,10 @@ class Application extends React.Component {
     render() {
         return (
             <div>
-                <PlusButton className="plus-at-the-top"/>
+                {/*<PlusButton className="plus-at-the-top"/>*/}
                 <Header/>
-                <ItemList/>
-                <PlusButton className="plus-at-the-bottom"/>
+                {/*<ItemList/>*/}
+                {/*<PlusButton className="plus-at-the-bottom"/>*/}
             </div>
         );
     }
@@ -13,8 +13,8 @@ class Application extends React.Component {
 
 const Header = () => (
     <header>
-        <h1>TODOOSE</h1>
-        <p><small>A <a href="https://github.com/jhu-oose/todoose">to-do application</a> for <a href="https://www.jhu-oose.com">OOSE</a></small></p>
+        <h1>Foodaholic Admin</h1>
+        <p><small>Hi, this is the admin of the foodaholic server. In developing.</small></p>
     </header>
 );
 

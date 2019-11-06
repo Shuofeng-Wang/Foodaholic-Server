@@ -31,5 +31,5 @@ test {
 task stage(dependsOn: 'assemble')
 
 application {
-    mainClassName = 'com.jhuoose.todoose.Server'
+    mainClassName = 'com.jhuoose.foodaholic.Server'
 }
