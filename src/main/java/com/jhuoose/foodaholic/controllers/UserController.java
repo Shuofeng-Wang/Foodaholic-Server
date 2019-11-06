@@ -1,8 +1,11 @@
 package com.jhuoose.foodaholic.controllers;
 
+import com.jhuoose.foodaholic.models.User;
 import com.jhuoose.foodaholic.repositories.UserNotFoundException;
 import com.jhuoose.foodaholic.repositories.UserRepository;
 import io.javalin.http.Context;
+import io.javalin.http.ForbiddenResponse;
+import at.favre.lib.crypto.bcrypt.BCrypt;
 
 import java.sql.SQLException;
 
@@ -13,24 +16,24 @@ public class UserController {
         this.userRepository = userRepository;
     }
 
-    public void getAll(Context ctx) throws SQLException {
-        ctx.json(userRepository.getAll());
-    }
-
-    public void create(Context ctx) throws SQLException {
-        userRepository.create();
+    public void register(Context ctx) throws SQLException {
+        String bcryptHashPassword = BCrypt.withDefaults().hashToString(12, ctx.formParam("password", "").toCharArray());
+        userRepository.create(new User(ctx.formParam("email", ""), bcryptHashPassword));
         ctx.status(201);
     }
 
-    public void delete(Context ctx) throws SQLException, UserNotFoundException {
-        userRepository.delete(userRepository.getOne(ctx.pathParam("identifier", Integer.class).get()));
-        ctx.status(204);
+    public void login(Context ctx) throws SQLException, UserNotFoundException {
+        var user = userRepository.getOne(ctx.formParam("email", ""));
+        if (!BCrypt.verifyer().verify(ctx.formParam("password", "").toCharArray(), user.getPassword()).verified) {
+            throw new ForbiddenResponse();
+        }
+        ctx.sessionAttribute("user", user);
+        ctx.status(200);
     }
 
-    public void update(Context ctx) throws SQLException, UserNotFoundException {
-        var item = userRepository.getOne(ctx.pathParam("identifier", Integer.class).get());
-        item.setDescription(ctx.formParam("description", ""));
-        userRepository.update(item);
-        ctx.status(204);
+    public User currentUser(Context ctx) {
+        var user = (User) ctx.sessionAttribute("user");
+        if (user == null) throw new ForbiddenResponse();
+        return user;
     }
 }
