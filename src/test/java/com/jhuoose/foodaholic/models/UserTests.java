@@ -7,8 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class UserTests {
     @Test
     void testGettersAndSetters() {
-        var item = new User(5, "This is a test");
-        assertEquals(5, item.getIdentifier());
-        assertEquals("This is a test", item.getDescription());
+        var user = new User("testUser", "testPassword");
+        assertEquals("testUser", user.getEmail());
+        assertEquals("testPassword", user.getPassword());
     }
 }
