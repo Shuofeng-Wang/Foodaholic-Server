@@ -6,7 +6,7 @@ public class Event {
     private String eventName;
     private String startTime;
     private String endTime;
-    private ArrayList<Object> activityList = new ArrayList<>();
+    private ArrayList<Activity> activityList = new ArrayList<>();
 
     public String getEventName() {
         return eventName;
@@ -32,11 +32,11 @@ public class Event {
         this.endTime = endTime;
     }
 
-    public ArrayList<Object> getActivityList() {
+    public ArrayList<Activity> getActivityList() {
         return activityList;
     }
 
-    public void setActivityList(ArrayList<Object> activityList) {
+    public void setActivityList(ArrayList<Activity> activityList) {
         this.activityList = activityList;
     }
 }
