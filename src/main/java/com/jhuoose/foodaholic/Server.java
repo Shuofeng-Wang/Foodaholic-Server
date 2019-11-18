@@ -1,7 +1,13 @@
 package com.jhuoose.foodaholic;
 
+import com.jhuoose.foodaholic.controllers.EventController;
 import com.jhuoose.foodaholic.controllers.UserController;
+import com.jhuoose.foodaholic.models.Event;
+import com.jhuoose.foodaholic.models.User;
+import com.jhuoose.foodaholic.repositories.EventRepository;
+import com.jhuoose.foodaholic.repositories.UserNotFoundException;
 import com.jhuoose.foodaholic.repositories.UserRepository;
+import com.jhuoose.foodaholic.repositories.EventNotFoundException;
 import io.javalin.Javalin;
 
 import java.sql.Connection;
@@ -23,6 +29,8 @@ public class Server {
             else connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
             var userRepository = new UserRepository(connection);
             var userController = new UserController(userRepository);
+            var eventRepository = new EventRepository(connection);
+            var eventController = new EventController(eventRepository);
             Javalin.create(config -> { config.addStaticFiles("/public"); })
                     .events(event -> {
                         event.serverStopped(() -> { connection.close(); });
@@ -34,8 +42,14 @@ public class Server {
                                 post(userController::login);
                             });
                         });
+                        path("events", () -> {
+                            post(eventController::create);
+                            path(":identifier", () -> {
+                                delete(eventController::delete);
+                            });
+                        });
                     })
-//                    .exception(ItemNotFoundException.class, (e, ctx) -> { ctx.status(404); })
+                    //.exception(EventNotFoundException.class, (e, ctx) -> { ctx.status(404); })
                     .start(System.getenv("PORT") == null ? 4000 : Integer.parseInt(System.getenv("PORT")));
         } catch (Exception e) {
             e.printStackTrace();
