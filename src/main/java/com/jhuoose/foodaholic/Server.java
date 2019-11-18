@@ -20,7 +20,7 @@ public class Server {
                 if (System.getenv("TRAVIS") == null)
                     connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/foodaholic", "postgres", "postgres");
                 else connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/travis_ci_test", "postgres", "");
-            else connection = DriverManager.getConnection(System.getenv("DATABASE_URL"));
+            else connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
             var userRepository = new UserRepository(connection);
             var userController = new UserController(userRepository);
             Javalin.create(config -> { config.addStaticFiles("/public"); })
