@@ -17,10 +17,12 @@ public class EventController{
     public void create(Context ctx) throws SQLException {
         eventRepository.create();
         ctx.status(201);
+        ctx.json("Create Successfully!");
     }
 
     public void delete(Context ctx) throws SQLException, EventNotFoundException {
         eventRepository.delete(eventRepository.getOne(ctx.pathParam("id", Integer.class).get()));
+        ctx.json("Delete Successfully!");
     }
 
     public void update(Context ctx) throws EventNotFoundException, SQLException {
@@ -31,7 +33,11 @@ public class EventController{
 
     public void getOne(Context ctx) throws  EventNotFoundException, SQLException{
         var id = ctx.pathParam("id", Integer.class);
-        System.out.println(id);
         var event = eventRepository.getOne(id.get());
+        ctx.json(event);
+    }
+
+    public void getAll(Context ctx) throws  EventNotFoundException, SQLException{
+        ctx.json(eventRepository.getAll());
     }
 }

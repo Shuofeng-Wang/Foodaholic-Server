@@ -6,7 +6,7 @@
 	},
 	"item": [
 		{
-			"name": "Get events",
+			"name": "Get event by Id",
 			"event": [
 				{
 					"listen": "test",
@@ -34,7 +34,7 @@
 					"script": {
 						"id": "4f997152-b08a-4810-8647-2f1238960c07",
 						"exec": [
-							"pm.sendRequest({ url: \"http://localhost:4000/events\", method: \"POST\" });"
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -44,7 +44,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:4000/events/1",
+					"raw": "http://localhost:4000/events/18",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -52,7 +52,83 @@
 					"port": "4000",
 					"path": [
 						"events",
-						"1"
+						"18"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Successful",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost/items",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"items"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [],
+					"cookie": [],
+					"body": "[\n\t{\"identifier\": 1, \"description\": \"Read TODO items\"},\n\t{\"identifier\": 2, \"description\": \"Create new TODO items\"},\n\t{\"identifier\": 3, \"description\": \"Edit TODO item\"},\n\t{\"identifier\": 4, \"description\": \"Mark items as DONE\"}\n]\n"
+				}
+			]
+		},
+		{
+			"name": "Get events",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1fd2ce41-9164-4ba6-9279-2c10ad933cd6",
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Response JSON is a list\", () => {",
+							"    pm.expect(pm.response.json()).to.be.an(\"array\");",
+							"});",
+							"pm.test(\"Items have id\", () => {",
+							"    pm.response.json().forEach(event => {",
+							"        pm.expect(event).to.have.all.keys(\"id\");",
+							"    });",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "4f997152-b08a-4810-8647-2f1238960c07",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:4000/events",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"events"
 					]
 				}
 			},
@@ -95,7 +171,7 @@
 							"});",
 							"pm.test(\"Identifiers are always increasing\", () => {",
 							"    pm.sendRequest(\"http://localhost:4000/events\", (err, response) => {",
-							"        const identifiers = response.json().map(event => event.id).reverse();",
+							"        const id = response.json().map(event => event.id).reverse();",
 							"        pm.expect(id[0]).to.be.equal(id[1] + 1);",
 							"    });",
 							"});",
@@ -357,23 +433,6 @@
 					"script": {
 						"id": "1f28be8a-b12f-4544-ab1f-05458edd4a96",
 						"exec": [
-							"pm.test(\"Status code is 204\", () => {",
-							"    pm.response.to.have.status(204);",
-							"});",
-							"",
-							"pm.test(\"Item is deleted\", () => {",
-							"    pm.sendRequest(\"http://localhost:7000/items\", (err, response) => {",
-							"        pm.expect(",
-							"            response.json().map(item => item.identifier)",
-							"        ).to.not.include(parseInt(pm.environment.get(\"itemIdentifier\")));",
-							"    });",
-							"});",
-							"",
-							"pm.test(\"Status code is 404 if item isn’t found\", () => {",
-							"    pm.sendRequest({ url: \"http://localhost:7000/items/51039\", method: \"DELETE\" }, (err, response) => {",
-							"        pm.expect(response).to.have.status(404);",
-							"    });",
-							"});",
 							""
 						],
 						"type": "text/javascript"
@@ -384,11 +443,6 @@
 					"script": {
 						"id": "1f042eff-532a-4075-84f7-e8397e6b5393",
 						"exec": [
-							"pm.sendRequest({ url: \"http://localhost:7000/items\", method: \"POST\" }, () => {",
-							"    pm.sendRequest(\"http://localhost:7000/items\", (err, response) => {",
-							"        pm.environment.set(\"itemIdentifier\", response.json().last().identifier);",
-							"    });",
-							"});",
 							""
 						],
 						"type": "text/javascript"
@@ -399,15 +453,15 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:7000/items/{{itemIdentifier}}",
+					"raw": "http://localhost:4000/events/4",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "7000",
+					"port": "4000",
 					"path": [
-						"items",
-						"{{itemIdentifier}}"
+						"events",
+						"4"
 					]
 				}
 			},

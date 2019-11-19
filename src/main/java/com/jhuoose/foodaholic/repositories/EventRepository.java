@@ -20,6 +20,38 @@ public class EventRepository{
         statement.close();
     }
 
+    public List<Event> getAll() throws EventNotFoundException, SQLException {
+        var events = new ArrayList<Event>();
+        var statement = connection.createStatement();
+        var result = statement.executeQuery("SELECT * FROM events");
+        try {
+            while(result.next()) {
+                //Integer[] array = (Integer[])(result.getArray("participantIdArray")).getArray();//.getClass().getSimpleName());
+                //for(Integer it :array){
+                //    System.out.println(it);
+                //}
+                events.add(
+                    new Event(
+                        result.getInt("id"),
+                        result.getString("eventName"),
+                        result.getString("description"),
+                        result.getString("location"),
+                        result.getString("startTime"),
+                        result.getString("endTime"),
+                        result.getInt("organizerId"),
+                        result.getString("theme"),
+                        Arrays.asList((Integer[])(result.getArray("participantIdArray")).getArray()),
+                        Arrays.asList((Integer[])(result.getArray("activityIdArray")).getArray())
+                    )
+                );
+            }
+        } finally {
+            statement.close();
+            result.close();
+            return events;
+        }
+    }
+
     public Event getOne(int id) throws EventNotFoundException, SQLException {
         var statement = connection.prepareStatement("SELECT * FROM events WHERE id = ?");
         statement.setInt(1, id);
@@ -59,7 +91,7 @@ public class EventRepository{
         var array = new Integer[]{1, 2, 3, 4};
         Array sqlArray = connection.createArrayOf("integer", array);
         statement.setArray(1, sqlArray);
-        statement.executeQuery();
+        statement.execute();
         statement.close();
     }
 
@@ -74,6 +106,4 @@ public class EventRepository{
             statement.close();
         }
     }
-
-
 }
