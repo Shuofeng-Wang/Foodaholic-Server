@@ -15,39 +15,36 @@ public class ActivityRepository {
     public ActivityRepository(Connection connection) throws SQLException {
         this.connection = connection;
         var statement = connection.createStatement();
-        statement.execute("Create Table IF NOT exists activitys (id SERIAL PRIMARY KEY , activityName TEXT, description TEXT, location TEXT, startTime TEXT, endTime TEXT, organizerId INTEGER, theme TEXT, participantIdArray integer[], activityIdArray integer[])");
+        statement.execute("Create Table IF NOT exists activities (id SERIAL PRIMARY KEY , activityName TEXT, description TEXT, vote integer, money float, category TEXT, participantIdArray integer[])");
         statement.close();
     }
 
     public List<Activity> getAll() throws ActivityNotFoundException, SQLException {
-        var activitys = new ArrayList<Activity>();
+        var activities = new ArrayList<Activity>();
         var statement = connection.createStatement();
-        var result = statement.executeQuery("SELECT * FROM activitys");
+        var result = statement.executeQuery("SELECT * FROM activities");
         try {
             while(result.next()) {
                 //Integer[] array = (Integer[])(result.getArray("participantIdArray")).getArray();//.getClass().getSimpleName());
                 //for(Integer it :array){
                 //    System.out.println(it);
                 //}
-                activitys.add(
+                activities.add(
                         new Activity(
                                 result.getInt("id"),
                                 result.getString("activityName"),
                                 result.getString("description"),
-                                result.getString("location"),
-                                result.getString("startTime"),
-                                result.getString("endTime"),
-                                result.getInt("organizerId"),
-                                result.getString("theme"),
-                                Arrays.asList((Integer[])(result.getArray("participantIdArray")).getArray()),
-                                Arrays.asList((Integer[])(result.getArray("activityIdArray")).getArray())
+                                result.getInt("vote"),
+                                result.getFloat("money"),
+                                result.getString("category"),
+                                Arrays.asList((Integer[])(result.getArray("participantIdArray")).getArray())
                         )
                 );
             }
         } finally {
             statement.close();
             result.close();
-            return activitys;
+            return activities;
         }
     }
 
@@ -65,13 +62,10 @@ public class ActivityRepository {
                         result.getInt("id"),
                         result.getString("activityName"),
                         result.getString("description"),
-                        result.getString("location"),
-                        result.getString("startTime"),
-                        result.getString("endTime"),
-                        result.getInt("organizerId"),
-                        result.getString("theme"),
-                        Arrays.asList((Integer[])(result.getArray("participantIdArray")).getArray()),
-                        Arrays.asList((Integer[])(result.getArray("activityIdArray")).getArray())
+                        result.getInt("vote"),
+                        result.getFloat("money"),
+                        result.getString("category"),
+                        Arrays.asList((Integer[])(result.getArray("participantIdArray")).getArray())
                 );
             } else {
                 throw new ActivityNotFoundException();
@@ -84,9 +78,9 @@ public class ActivityRepository {
 
     public void create() throws SQLException{
         //var statement = connection.createStatement();
-        //statement.execute("INSERT INTO activitys (activityName, description, location, startTime, endTime, organizerId, theme, participantIdArray, activityIdArray) VALUES ('testActivityName', 'testDesc', 'test','test','test',100,'test','{10000, 10000, 10000, 10000}','{20000, 25000, 25000, 25000}');");
+        //statement.execute("INSERT INTO activities (activityName, description, location, startTime, endTime, organizerId, theme, participantIdArray, activityIdArray) VALUES ('testActivityName', 'testDesc', 'test','test','test',100,'test','{10000, 10000, 10000, 10000}','{20000, 25000, 25000, 25000}');");
         //statement.close();
-        var statement = connection.prepareStatement("INSERT INTO activitys (activityName, description, location, startTime, endTime, organizerId, theme, participantIdArray, activityIdArray) VALUES ('testActivityName', 'testDesc', 'test','test','test',100,'test',?,'{20000, 25000, 25000, 25000}');");
+        var statement = connection.prepareStatement("INSERT INTO activities (activityName, description, vote, money, category, participantIdArray) VALUES ('testActivityName', 'testDesc', 10, 11.15, ?);");
         var array = new Integer[]{1, 2, 3, 4};
         Array sqlArray = connection.createArrayOf("integer", array);
         statement.setArray(1, sqlArray);
@@ -95,7 +89,7 @@ public class ActivityRepository {
     }
 
     public void delete(Activity activity) throws SQLException {
-        var statement = connection.prepareStatement("DELETE from activitys WHERE id = ?");
+        var statement = connection.prepareStatement("DELETE from activities WHERE id = ?");
         statement.setInt(1, activity.getId());
         try {
             if(statement.executeUpdate() == 0) throw new ActivityNotFoundException();

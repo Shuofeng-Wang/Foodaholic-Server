@@ -12,7 +12,7 @@ import java.sql.SQLException;
 public class ActivityController {
     private ActivityRepository activityRepository;
 
-    public Controller(ActivityRepository activityRepository) {
+    public ActivityController(ActivityRepository activityRepository) {
         this.activityRepository = activityRepository;
     }
 

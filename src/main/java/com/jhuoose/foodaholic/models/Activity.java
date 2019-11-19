@@ -5,23 +5,23 @@ import java.util.List;
 public class Activity {
     private int id;
     private String activityName;
-    private List<Integer> participantIdList;
     private String description;
     private int vote;
     private float money;
     private String category;
+    private List<Integer> participantIdList;
 
     public Activity() {
     }
 
-    public Activity(int id, String activityName, List<Integer> participantIdList, String description, int vote, float money, String category) {
+    public Activity(int id, String activityName, String description, int vote, float money, String category, List<Integer> participantIdList) {
         this.id = id;
         this.activityName = activityName;
-        this.participantIdList = participantIdList;
         this.description = description;
         this.vote = vote;
         this.money = money;
         this.category = category;
+        this.participantIdList = participantIdList;
     }
 
     public int getId() {
