@@ -31,6 +31,8 @@ public class Server {
             var userController = new UserController(userRepository);
             var eventRepository = new EventRepository(connection);
             var eventController = new EventController(eventRepository);
+            var activityRepository = new EventRepository(connection);
+            var activityController = new EventController(activityRepository);
             Javalin.create(config -> { config.addStaticFiles("/public"); })
                     .events(event -> {
                         event.serverStopped(() -> { connection.close(); });
@@ -48,6 +50,14 @@ public class Server {
                             path(":id", () -> {
                                 delete(eventController::delete);
                                 get(eventController::getOne);
+                            });
+                        });
+                        path("activities", () -> {
+                            post(activityController::create);
+                            get(activityController::getAll);
+                            path(":id", () -> {
+                                delete(activityController::delete);
+                                get(activityController::getOne);
                             });
                         });
                     })
