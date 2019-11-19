@@ -1,13 +1,12 @@
 package com.jhuoose.foodaholic;
 
+import com.jhuoose.foodaholic.controllers.ActivityController;
 import com.jhuoose.foodaholic.controllers.EventController;
 import com.jhuoose.foodaholic.controllers.UserController;
+import com.jhuoose.foodaholic.models.Activity;
 import com.jhuoose.foodaholic.models.Event;
 import com.jhuoose.foodaholic.models.User;
-import com.jhuoose.foodaholic.repositories.EventRepository;
-import com.jhuoose.foodaholic.repositories.UserNotFoundException;
-import com.jhuoose.foodaholic.repositories.UserRepository;
-import com.jhuoose.foodaholic.repositories.EventNotFoundException;
+import com.jhuoose.foodaholic.repositories.*;
 import io.javalin.Javalin;
 
 import java.sql.Connection;
@@ -31,8 +30,8 @@ public class Server {
             var userController = new UserController(userRepository);
             var eventRepository = new EventRepository(connection);
             var eventController = new EventController(eventRepository);
-            var activityRepository = new EventRepository(connection);
-            var activityController = new EventController(activityRepository);
+            var activityRepository = new ActivityRepository(connection);
+            var activityController = new ActivityController(activityRepository);
             Javalin.create(config -> { config.addStaticFiles("/public"); })
                     .events(event -> {
                         event.serverStopped(() -> { connection.close(); });

@@ -49,7 +49,7 @@ public class ActivityRepository {
     }
 
     public Activity getOne(int id) throws ActivityNotFoundException, SQLException {
-        var statement = connection.prepareStatement("SELECT * FROM activitys WHERE id = ?");
+        var statement = connection.prepareStatement("SELECT * FROM activities WHERE id = ?");
         statement.setInt(1, id);
         var result = statement.executeQuery();
         try {
@@ -80,7 +80,7 @@ public class ActivityRepository {
         //var statement = connection.createStatement();
         //statement.execute("INSERT INTO activities (activityName, description, location, startTime, endTime, organizerId, theme, participantIdArray, activityIdArray) VALUES ('testActivityName', 'testDesc', 'test','test','test',100,'test','{10000, 10000, 10000, 10000}','{20000, 25000, 25000, 25000}');");
         //statement.close();
-        var statement = connection.prepareStatement("INSERT INTO activities (activityName, description, vote, money, category, participantIdArray) VALUES ('testActivityName', 'testDesc', 10, 11.15, ?);");
+        var statement = connection.prepareStatement("INSERT INTO activities (activityName, description, vote, money, category, participantIdArray) VALUES ('testActivityName', 'testDesc', 10, 11.15, 'testCategory', ?);");
         var array = new Integer[]{1, 2, 3, 4};
         Array sqlArray = connection.createArrayOf("integer", array);
         statement.setArray(1, sqlArray);
