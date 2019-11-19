@@ -44,8 +44,9 @@ public class Server {
                         });
                         path("events", () -> {
                             post(eventController::create);
-                            path(":identifier", () -> {
+                            path(":id", () -> {
                                 delete(eventController::delete);
+                                get(eventController::getOne);
                             });
                         });
                     })

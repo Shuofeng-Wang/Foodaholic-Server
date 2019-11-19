@@ -20,7 +20,18 @@ public class EventController{
     }
 
     public void delete(Context ctx) throws SQLException, EventNotFoundException {
-        eventRepository.delete(eventRepository.getOne(ctx.pathParam("identifier", Integer.class).get()));
+        eventRepository.delete(eventRepository.getOne(ctx.pathParam("id", Integer.class).get()));
+    }
 
+    public void update(Context ctx) throws EventNotFoundException, SQLException {
+        var event = eventRepository.getOne(ctx.pathParam("id", Integer.class).get());
+        var eventName = ctx.formParam("eventName", "");
+        //if(!eventName.isEmpty()) event.setEventName(eventName);
+    }
+
+    public void getOne(Context ctx) throws  EventNotFoundException, SQLException{
+        var id = ctx.pathParam("id", Integer.class);
+        System.out.println(id);
+        var event = eventRepository.getOne(id.get());
     }
 }

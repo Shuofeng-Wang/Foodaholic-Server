@@ -1,31 +1,14 @@
 package com.jhuoose.foodaholic.models;
 
+import java.util.List;
+
 public class Activity {
+    private int id;
     private String activityName;
+    private List<Integer> participantIdList;
     private String description;
-    private int votes;
+    private int vote;
+    private float money;
+    private String category;
 
-    public String getActivityName() {
-        return activityName;
-    }
-
-    public void setActivityName(String activityName) {
-        this.activityName = activityName;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public int getVotes() {
-        return votes;
-    }
-
-    public void setVotes(int votes) {
-        this.votes = votes;
-    }
 }
