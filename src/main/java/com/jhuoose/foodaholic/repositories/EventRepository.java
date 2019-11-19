@@ -84,9 +84,11 @@ public class EventRepository{
     }
 
     public void create() throws SQLException{
-        //var statement = connection.createStatement();
-        //statement.execute("INSERT INTO events (eventName, description, location, startTime, endTime, organizerId, theme, participantIdArray, activityIdArray) VALUES ('testEventName', 'testDesc', 'test','test','test',100,'test','{10000, 10000, 10000, 10000}','{20000, 25000, 25000, 25000}');");
-        //statement.close();
+        /*
+        var statement = connection.createStatement();
+        statement.execute("INSERT INTO events (eventName, description, location, startTime, endTime, organizerId, theme, participantIdArray, activityIdArray) VALUES ('testEventName', 'testDesc', 'test','test','test',100,'test','{10000, 10000, 10000, 10000}','{20000, 25000, 25000, 25000}');");
+        statement.close();
+        */
         var statement = connection.prepareStatement("INSERT INTO events (eventName, description, location, startTime, endTime, organizerId, theme, participantIdArray, activityIdArray) VALUES ('testEventName', 'testDesc', 'test','test','test',100,'test',?,'{20000, 25000, 25000, 25000}');");
         var array = new Integer[]{1, 2, 3, 4};
         Array sqlArray = connection.createArrayOf("integer", array);
@@ -95,14 +97,30 @@ public class EventRepository{
         statement.close();
     }
 
-    public void delete(Event event) throws SQLException {
+    public void delete(Event event) throws SQLException, EventNotFoundException {
         var statement = connection.prepareStatement("DELETE from events WHERE id = ?");
         statement.setInt(1, event.getId());
         try {
             if(statement.executeUpdate() == 0) throw new EventNotFoundException();
-        } catch (EventNotFoundException e) {
-            e.printStackTrace();
         } finally{
+            statement.close();
+        }
+    }
+
+    public void edit(Event event) throws SQLException, EventNotFoundException {
+        var statement = connection.prepareStatement("UPDATE events SET eventName = ?, description = ?, location = ?, startTime = ?, endTime = ?, organizerId = ?, theme = ? WHERE id = ?");
+        statement.setString(1, event.getEventName());
+        statement.setString(2, event.getDescription());
+        statement.setString(3, event.getLocation());
+        statement.setString(4,event.getStartTime());
+        statement.setString(5, event.getEndTime());
+        statement.setInt(5,event.getOrganizerId());
+        statement.setString(7,event.getTheme());
+        statement.setInt(8, event.getId());
+        try {
+            if(statement.executeUpdate() == 0) throw new EventNotFoundException();
+        }
+        finally {
             statement.close();
         }
     }

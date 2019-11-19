@@ -60,7 +60,7 @@ public class Server {
                             });
                         });
                     })
-                    //.exception(EventNotFoundException.class, (e, ctx) -> { ctx.status(404); })
+                    .exception(EventNotFoundException.class, (e, ctx) -> { ctx.status(404); })
                     .start(System.getenv("PORT") == null ? 4000 : Integer.parseInt(System.getenv("PORT")));
         } catch (Exception e) {
             e.printStackTrace();
