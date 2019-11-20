@@ -32,16 +32,16 @@ public class EventRepository{
                 //}
                 events.add(
                     new Event(
-                        result.getInt("id"),
-                        result.getString("eventName"),
-                        result.getString("description"),
-                        result.getString("location"),
-                        result.getString("startTime"),
-                        result.getString("endTime"),
-                        result.getInt("organizerId"),
-                        result.getString("theme"),
-                        Arrays.asList((Integer[])(result.getArray("participantIdArray")).getArray()),
-                        Arrays.asList((Integer[])(result.getArray("activityIdArray")).getArray())
+                            result.getInt("id"),
+                            result.getString("eventName"),
+                            result.getString("description"),
+                            result.getString("location"),
+                            result.getString("startTime"),
+                            result.getString("endTime"),
+                            result.getInt("organizerId"),
+                            result.getString("theme"),
+                            new ArrayList<Integer>(Arrays.asList((Integer[])(result.getArray("participantIdArray")).getArray())),
+                            new ArrayList<Integer>(Arrays.asList((Integer[])(result.getArray("activityIdArray")).getArray()))
                     )
                 );
             }
@@ -71,8 +71,8 @@ public class EventRepository{
                         result.getString("endTime"),
                         result.getInt("organizerId"),
                         result.getString("theme"),
-                        Arrays.asList((Integer[])(result.getArray("participantIdArray")).getArray()),
-                        Arrays.asList((Integer[])(result.getArray("activityIdArray")).getArray())
+                        new ArrayList<Integer>(Arrays.asList((Integer[])(result.getArray("participantIdArray")).getArray())),
+                        new ArrayList<Integer>(Arrays.asList((Integer[])(result.getArray("activityIdArray")).getArray()))
                 );
             } else {
                 throw new EventNotFoundException();

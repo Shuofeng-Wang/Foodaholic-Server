@@ -37,7 +37,7 @@ public class ActivityRepository {
                                 result.getInt("vote"),
                                 result.getFloat("money"),
                                 result.getString("category"),
-                                Arrays.asList((Integer[])(result.getArray("participantIdArray")).getArray())
+                                new ArrayList<Integer>(Arrays.asList((Integer[])(result.getArray("participantIdArray")).getArray()))
                         )
                 );
             }
@@ -65,7 +65,7 @@ public class ActivityRepository {
                         result.getInt("vote"),
                         result.getFloat("money"),
                         result.getString("category"),
-                        Arrays.asList((Integer[])(result.getArray("participantIdArray")).getArray())
+                        new ArrayList<Integer>(Arrays.asList((Integer[])(result.getArray("participantIdArray")).getArray()))
                 );
             } else {
                 throw new ActivityNotFoundException();

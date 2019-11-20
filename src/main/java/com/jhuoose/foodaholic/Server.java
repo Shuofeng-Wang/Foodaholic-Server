@@ -42,6 +42,39 @@ public class Server {
                             path("login", () -> {
                                 post(userController::login);
                             });
+                            path("logout", () -> {
+                                post(userController::logout);
+                            });
+                            path("current", () -> {
+                                get(userController::getCurrentUser);
+                                delete(userController::deleteCurrentUser);
+                                put(userController::updateCurrentUserProfile);
+                                path("friends", () -> {
+//                                    get(userController::getFriendList);
+                                    path(":id", () -> {
+                                        post(userController::addFriend);
+                                        delete(userController::deleteFriend);
+                                    });
+                                });
+                                path("events", () -> {
+//                                    get(userController::getParticipatingEventList);
+                                    path(":id", () -> {
+                                        post(userController::joinEvent);
+                                        delete(userController::leaveEvent);
+                                    });
+                                });
+//                                path("notifications", () -> {
+//                                    get(userController::getNotificationList);
+//                                });
+                            });
+                            path(":id", () -> {
+                                get(userController::getProfileById);
+                            });
+                            path("search", () -> {
+                                path("byEmail", () -> {
+                                   get(userController::getProfileByEmail);
+                                });
+                            });
                         });
                         path("events", () -> {
                             post(eventController::create);
@@ -62,7 +95,9 @@ public class Server {
                             });
                         });
                     })
+                    .exception(UserNotFoundException.class, (e, ctx) -> { ctx.status(404); })
                     .exception(EventNotFoundException.class, (e, ctx) -> { ctx.status(404); })
+                    .exception(ActivityNotFoundException.class, (e, ctx) -> { ctx.status(404); })
                     .start(System.getenv("PORT") == null ? 4000 : Integer.parseInt(System.getenv("PORT")));
         } catch (Exception e) {
             e.printStackTrace();

@@ -2,7 +2,6 @@ package com.jhuoose.foodaholic.models;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class Event {
 
@@ -14,13 +13,13 @@ public class Event {
     private String endTime;
     private int organizerId;
     private String theme;
-    private List<Integer> participantIdList;
-    private List<Integer> activityIdList;
+    private ArrayList<Integer> participantIdList;
+    private ArrayList<Integer> activityIdList;
 
     public Event() {
     }
 
-    public Event(int id, String eventName, String description, String location, String startTime, String endTime, int organizerId, String theme, List<Integer> participantIdList, List<Integer> activityIdList) {
+    public Event(int id, String eventName, String description, String location, String startTime, String endTime, int organizerId, String theme, ArrayList<Integer> participantIdList, ArrayList<Integer> activityIdList) {
         this.id = id;
         this.eventName = eventName;
         this.description = description;
@@ -113,19 +112,19 @@ public class Event {
         this.organizerId = organizerId;
     }
 
-    public List<Integer> getParticipantIdList() {
+    public ArrayList<Integer> getParticipantIdList() {
         return participantIdList;
     }
 
-    public void setParticipantIdList(List<Integer> participantIdList) {
+    public void setParticipantIdList(ArrayList<Integer> participantIdList) {
         this.participantIdList = participantIdList;
     }
 
-    public List<Integer> getActivityIdList() {
+    public ArrayList<Integer> getActivityIdList() {
         return activityIdList;
     }
 
-    public void setActivityIdList(List<Integer> activityIdList) {
+    public void setActivityIdList(ArrayList<Integer> activityIdList) {
         this.activityIdList = activityIdList;
     }
 }

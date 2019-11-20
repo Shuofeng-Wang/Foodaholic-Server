@@ -1,6 +1,6 @@
 package com.jhuoose.foodaholic.models;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class Activity {
     private int id;
@@ -9,12 +9,12 @@ public class Activity {
     private int vote;
     private float money;
     private String category;
-    private List<Integer> participantIdList;
+    private ArrayList<Integer> participantIdList;
 
     public Activity() {
     }
 
-    public Activity(int id, String activityName, String description, int vote, float money, String category, List<Integer> participantIdList) {
+    public Activity(int id, String activityName, String description, int vote, float money, String category, ArrayList<Integer> participantIdList) {
         this.id = id;
         this.activityName = activityName;
         this.description = description;
@@ -40,11 +40,11 @@ public class Activity {
         this.activityName = activityName;
     }
 
-    public List<Integer> getParticipantIdList() {
+    public ArrayList<Integer> getParticipantIdList() {
         return participantIdList;
     }
 
-    public void setParticipantIdList(List<Integer> participantIdList) {
+    public void setParticipantIdList(ArrayList<Integer> participantIdList) {
         this.participantIdList = participantIdList;
     }
 
