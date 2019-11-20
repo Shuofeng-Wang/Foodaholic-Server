@@ -101,13 +101,14 @@ public class ActivityRepository {
     }
 
     public void edit(Activity activity) throws SQLException, ActivityNotFoundException {
-        var statement = connection.prepareStatement("UPDATE activities SET activityName = ?, description = ?, vote = ?, money = ?, category = ? WHERE id = ?");
+        var statement = connection.prepareStatement("UPDATE activities SET activityName = ?, description = ?, vote = ?, money = ?, category = ?, participantIdArray = ? WHERE id = ?");
         statement.setString(1, activity.getActivityName());
         statement.setString(2, activity.getDescription());
         statement.setInt(3, activity.getVote());
         statement.setFloat(4,activity.getMoney());
         statement.setString(5, activity.getCategory());
-        statement.setInt(6, activity.getId());
+        statement.setArray(6, connection.createArrayOf("integer",activity.getParticipantIdList().toArray()));
+        statement.setInt(7, activity.getId());
         try {
             if(statement.executeUpdate() == 0) throw new ActivityNotFoundException();
         }

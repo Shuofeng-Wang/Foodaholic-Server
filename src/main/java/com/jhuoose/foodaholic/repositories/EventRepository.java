@@ -108,7 +108,7 @@ public class EventRepository{
     }
 
     public void edit(Event event) throws SQLException, EventNotFoundException {
-        var statement = connection.prepareStatement("UPDATE events SET eventName = ?, description = ?, location = ?, startTime = ?, endTime = ?, organizerId = ?, theme = ? WHERE id = ?");
+        var statement = connection.prepareStatement("UPDATE events SET eventName = ?, description = ?, location = ?, startTime = ?, endTime = ?, organizerId = ?, theme = ?, participantIdArray = ?, ActivityIdArray = ? WHERE id = ?");
         statement.setString(1, event.getEventName());
         statement.setString(2, event.getDescription());
         statement.setString(3, event.getLocation());
@@ -116,7 +116,9 @@ public class EventRepository{
         statement.setString(5, event.getEndTime());
         statement.setInt(6,event.getOrganizerId());
         statement.setString(7,event.getTheme());
-        statement.setInt(8, event.getId());
+        statement.setArray(8, connection.createArrayOf("integer",event.getParticipantIdList().toArray()));
+        statement.setArray(9, connection.createArrayOf("integer",event.getActivityIdList().toArray()));
+        statement.setInt(10, event.getId());
         try {
             if(statement.executeUpdate() == 0) throw new EventNotFoundException();
         }
