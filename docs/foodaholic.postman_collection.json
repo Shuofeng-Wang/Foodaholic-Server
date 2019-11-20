@@ -309,6 +309,114 @@
 			]
 		},
 		{
+			"name": "Edit activity",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1f28be8a-b12f-4544-ab1f-05458edd4a96",
+						"exec": [
+							"pm.test(\"Status code is 204\", () => {",
+							"    pm.response.to.have.status(204);",
+							"});",
+							"",
+							"pm.test(\"Item is edited\", () => {",
+							"    pm.sendRequest(\"http://localhost:4000/activities\", (err, response) => {",
+							"        pm.expect(response.json().last().description).to.equal(\"some description\");",
+							"    });",
+							"});",
+							"",
+							"pm.test(\"Status code is 404 if item isn’t found\", () => {",
+							"    pm.sendRequest({ url: \"http://localhost:4000/activitiess/51039\", method: \"PUT\" }, (err, response) => {",
+							"        pm.expect(response).to.have.status(404);",
+							"    });",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "1f042eff-532a-4075-84f7-e8397e6b5393",
+						"exec": [
+							"pm.sendRequest({ url: \"http://localhost:4000/activities\", method: \"POST\" }, () => {",
+							"    pm.sendRequest(\"http://localhost:4000/activities\", (err, response) => {",
+							"        pm.environment.set(\"activityId\", response.json().last().id);",
+							"    });",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "description",
+							"value": "some description",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:4000/activities/{{activityId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"activities",
+						"{{activityId}}"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Successful",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "description",
+									"value": "whatever",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:7000/items/7",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "7000",
+							"path": [
+								"items",
+								"7"
+							]
+						}
+					},
+					"status": "No Content",
+					"code": 204,
+					"_postman_previewlanguage": "Text",
+					"header": [],
+					"cookie": [],
+					"body": ""
+				}
+			]
+		},
+		{
 			"name": "Get events",
 			"event": [
 				{
@@ -571,7 +679,7 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:4000/events/4",
+					"raw": "http://localhost:4000/events/78",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -579,7 +687,7 @@
 					"port": "4000",
 					"path": [
 						"events",
-						"4"
+						"78"
 					]
 				}
 			},

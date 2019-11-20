@@ -39,7 +39,6 @@ public class EventController{
 
     public void edit(Context ctx) throws EventNotFoundException, SQLException {
         var event = eventRepository.getOne(ctx.pathParam("id", Integer.class).get());
-        System.out.println(event.toString());
         var eventName = ctx.formParam("eventName");
         if(eventName != null) event.setEventName(eventName);
         var description = ctx.formParam("description","");

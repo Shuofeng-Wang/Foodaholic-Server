@@ -58,6 +58,7 @@ public class Server {
                             path(":id", () -> {
                                 delete(activityController::delete);
                                 get(activityController::getOne);
+                                put(activityController::edit);
                             });
                         });
                     })
