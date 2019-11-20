@@ -33,6 +33,22 @@ public class Event {
         this.activityIdList = activityIdList;
     }
 
+    @Override
+    public String toString() {
+        return "Event{" +
+                "id=" + id +
+                ", eventName='" + eventName + '\'' +
+                ", description='" + description + '\'' +
+                ", location='" + location + '\'' +
+                ", startTime='" + startTime + '\'' +
+                ", endTime='" + endTime + '\'' +
+                ", organizerId=" + organizerId +
+                ", theme='" + theme + '\'' +
+                ", participantIdList=" + participantIdList +
+                ", activityIdList=" + activityIdList +
+                '}';
+    }
+
     public int getId() {
         return id;
     }

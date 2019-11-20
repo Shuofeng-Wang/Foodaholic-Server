@@ -49,6 +49,7 @@ public class Server {
                             path(":id", () -> {
                                 delete(eventController::delete);
                                 get(eventController::getOne);
+                                put(eventController::edit);
                             });
                         });
                         path("activities", () -> {

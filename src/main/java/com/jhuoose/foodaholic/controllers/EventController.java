@@ -39,6 +39,7 @@ public class EventController{
 
     public void edit(Context ctx) throws EventNotFoundException, SQLException {
         var event = eventRepository.getOne(ctx.pathParam("id", Integer.class).get());
+        System.out.println(event.toString());
         var eventName = ctx.formParam("eventName");
         if(eventName != null) event.setEventName(eventName);
         var description = ctx.formParam("description","");
@@ -49,11 +50,12 @@ public class EventController{
         if(!startTime.isEmpty()) event.setStartTime(startTime);
         var endTime = ctx.formParam("endTime", "");
         if(!endTime.isEmpty()) event.setEndTime(endTime);
-        var organizerId = ctx.formParam("organizerId", Integer.class).get();
+        var organizerId = ctx.formParam("organizerId", Integer.class).getOrNull();
         if(organizerId != null) event.setOrganizerId(organizerId);
         var theme = ctx.formParam("theme");
         if(theme != null) event.setTheme(theme);
         eventRepository.edit(event);
         ctx.status(204);
+        ctx.json("Edit Successfully!");
     }
 }

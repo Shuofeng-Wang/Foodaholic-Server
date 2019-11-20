@@ -114,7 +114,7 @@ public class EventRepository{
         statement.setString(3, event.getLocation());
         statement.setString(4,event.getStartTime());
         statement.setString(5, event.getEndTime());
-        statement.setInt(5,event.getOrganizerId());
+        statement.setInt(6,event.getOrganizerId());
         statement.setString(7,event.getTheme());
         statement.setInt(8, event.getId());
         try {
