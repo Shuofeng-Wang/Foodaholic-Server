@@ -1,5 +1,6 @@
 package com.jhuoose.foodaholic.repositories;
 
+import com.jhuoose.foodaholic.Server;
 import com.jhuoose.foodaholic.models.Activity;
 
 import java.sql.Array;
@@ -10,9 +11,23 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ActivityRepository {
+    private static ActivityRepository ourInstance;
+
+    static {
+        try {
+            ourInstance = new ActivityRepository(Server.getConnection());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static ActivityRepository getInstance() {
+        return ourInstance;
+    }
+
     private Connection connection;
 
-    public ActivityRepository(Connection connection) throws SQLException {
+    private ActivityRepository(Connection connection) throws SQLException {
         this.connection = connection;
         var statement = connection.createStatement();
         statement.execute("Create Table IF NOT exists activities (id SERIAL PRIMARY KEY , activityName TEXT, description TEXT, vote integer, money float, category TEXT, participantIdArray integer[])");
@@ -76,21 +91,65 @@ public class ActivityRepository {
         }
     }
 
-    public void create() throws SQLException{
+    public List<Activity> getMultiple(List<Integer> idList) throws SQLException {
+        var activities = new ArrayList<Activity>();
+        var statement = connection.prepareStatement(
+                "SELECT * FROM activities WHERE id IN (SELECT(UNNEST(?::integer[])))");
+        statement.setArray(1, connection.createArrayOf("integer", idList.toArray()));
+        var result = statement.executeQuery();
+        try {
+            while(result.next()) {
+                activities.add(
+                    new Activity(
+                            result.getInt("id"),
+                            result.getString("activityName"),
+                            result.getString("description"),
+                            result.getInt("vote"),
+                            result.getFloat("money"),
+                            result.getString("category"),
+                            new ArrayList<Integer>(Arrays.asList((Integer[])(result.getArray("participantIdArray")).getArray()))
+                    )
+                );
+            }
+            return activities;
+        } finally {
+            statement.close();
+            result.close();
+        }
+    }
+
+    public int create(Activity activity) throws SQLException{
         //var statement = connection.createStatement();
         //statement.execute("INSERT INTO activities (activityName, description, location, startTime, endTime, organizerId, theme, participantIdArray, activityIdArray) VALUES ('testActivityName', 'testDesc', 'test','test','test',100,'test','{10000, 10000, 10000, 10000}','{20000, 25000, 25000, 25000}');");
         //statement.close();
-        var statement = connection.prepareStatement("INSERT INTO activities (activityName, description, vote, money, category, participantIdArray) VALUES ('testActivityName', 'testDesc', 10, 11.15, 'testCategory', ?);");
-        var array = new Integer[]{1, 2, 3, 4};
-        Array sqlArray = connection.createArrayOf("integer", array);
-        statement.setArray(1, sqlArray);
-        statement.execute();
-        statement.close();
+        var statement = connection.prepareStatement("INSERT INTO activities (" +
+                "activityName, description, vote, money, category, participantIdArray) " +
+                "VALUES (?, ?, ?, ?, ?, ?) " +
+                "RETURNING id");
+        statement.setString(1, activity.getActivityName());
+        statement.setString(2, activity.getDescription());
+        statement.setInt(3, activity.getVote());
+        statement.setFloat(4,activity.getMoney());
+        statement.setString(5, activity.getCategory());
+        statement.setArray(6, connection.createArrayOf("integer",activity.getParticipantIdList().toArray()));
+        var result = statement.executeQuery();
+        try {
+            result.next();
+            return result.getInt("id");
+        }
+        finally {
+            statement.close();
+            result.close();
+        }
     }
 
     public void delete(Activity activity) throws SQLException {
+        delete(activity.getId());
+    }
+
+    public void delete(int id) throws SQLException {
         var statement = connection.prepareStatement("DELETE from activities WHERE id = ?");
-        statement.setInt(1, activity.getId());
+        statement.setInt(1, id);
         try {
             if(statement.executeUpdate() == 0) throw new ActivityNotFoundException();
         } catch (ActivityNotFoundException e) {
@@ -100,7 +159,7 @@ public class ActivityRepository {
         }
     }
 
-    public void edit(Activity activity) throws SQLException, ActivityNotFoundException {
+    public void update(Activity activity) throws SQLException, ActivityNotFoundException {
         var statement = connection.prepareStatement("UPDATE activities SET activityName = ?, description = ?, vote = ?, money = ?, category = ?, participantIdArray = ? WHERE id = ?");
         statement.setString(1, activity.getActivityName());
         statement.setString(2, activity.getDescription());

@@ -3,9 +3,6 @@ package com.jhuoose.foodaholic;
 import com.jhuoose.foodaholic.controllers.ActivityController;
 import com.jhuoose.foodaholic.controllers.EventController;
 import com.jhuoose.foodaholic.controllers.UserController;
-import com.jhuoose.foodaholic.models.Activity;
-import com.jhuoose.foodaholic.models.Event;
-import com.jhuoose.foodaholic.models.User;
 import com.jhuoose.foodaholic.repositories.*;
 import io.javalin.Javalin;
 
@@ -16,22 +13,31 @@ import java.sql.SQLException;
 import static io.javalin.apibuilder.ApiBuilder.*;
 
 public class Server {
-    public static void main(String[] args) throws SQLException {
-//        var connection = DriverManager.getConnection("jdbc:sqlite:todoose.db");
+    private static Connection connection;
+
+    static {
         try {
             Class.forName("org.postgresql.Driver");
-            Connection connection;
             if (System.getenv("DATABASE_URL") == null)
                 if (System.getenv("TRAVIS") == null)
                     connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/foodaholic", "postgres", "postgres");
                 else connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/travis_ci_test", "postgres", "");
             else connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
-            var userRepository = new UserRepository(connection);
-            var userController = new UserController(userRepository);
-            var eventRepository = new EventRepository(connection);
-            var eventController = new EventController(eventRepository);
-            var activityRepository = new ActivityRepository(connection);
-            var activityController = new ActivityController(activityRepository);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(0);
+        }
+    }
+
+    public static Connection getConnection() {
+        return connection;
+    }
+
+    public static void main(String[] args) throws SQLException {
+        try {
+            var userController = UserController.getInstance();
+            var eventController = EventController.getInstance();
+            var activityController = ActivityController.getInstance();
             Javalin.create(config -> { config.addStaticFiles("/public"); })
                     .events(event -> {
                         event.serverStopped(() -> { connection.close(); });
@@ -46,26 +52,29 @@ public class Server {
                                 post(userController::logout);
                             });
                             path("current", () -> {
-                                get(userController::getCurrentUser);
+                                get(userController::getCurrentUserView);
                                 delete(userController::deleteCurrentUser);
-                                put(userController::updateCurrentUserProfile);
-                                path("friends", () -> {
-//                                    get(userController::getFriendList);
-                                    path(":id", () -> {
-                                        post(userController::addFriend);
-                                        delete(userController::deleteFriend);
-                                    });
-                                });
                                 path("events", () -> {
-//                                    get(userController::getParticipatingEventList);
+                                    get(userController::getParticipatingEventList);
                                     path(":id", () -> {
                                         post(userController::joinEvent);
                                         delete(userController::leaveEvent);
                                     });
                                 });
-//                                path("notifications", () -> {
+                                path("notifications", () -> {
 //                                    get(userController::getNotificationList);
-//                                });
+                                });
+                                path("friends", () -> {
+                                    get(userController::getFriendList);
+                                    path(":id", () -> {
+                                        post(userController::addFriend);
+                                        delete(userController::deleteFriend);
+                                    });
+                                });
+                                path("profile", () -> {
+                                    get(userController::getCurrentUserProfile);
+                                    put(userController::updateCurrentUserProfile);
+                                });
                             });
                             path(":id", () -> {
                                 get(userController::getProfileById);
@@ -78,20 +87,29 @@ public class Server {
                         });
                         path("events", () -> {
                             post(eventController::create);
-                            get(eventController::getAll);
                             path(":id", () -> {
                                 delete(eventController::delete);
-                                get(eventController::getOne);
-                                put(eventController::edit);
+                                get(eventController::getEventView);
+                                put(eventController::update);
+                                path("activities", () -> {
+                                    get(eventController::getActivityList);
+                                    post(eventController::createActivity);
+                                    path(":activityId", () -> {
+                                        delete(eventController::deleteActivity);
+                                    });
+                                });
                             });
                         });
                         path("activities", () -> {
-                            post(activityController::create);
-                            get(activityController::getAll);
                             path(":id", () -> {
-                                delete(activityController::delete);
-                                get(activityController::getOne);
-                                put(activityController::edit);
+                                get(activityController::getActivityView);
+                                put(activityController::update);
+                                path("vote", () -> {
+                                    put(activityController::vote);
+                                });
+                                path("boo", () -> {
+                                    put(activityController::boo);
+                                });
                             });
                         });
                     })

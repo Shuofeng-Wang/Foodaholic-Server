@@ -13,8 +13,8 @@ public class Event {
     private String endTime;
     private int organizerId;
     private String theme;
-    private ArrayList<Integer> participantIdList;
-    private ArrayList<Integer> activityIdList;
+    private ArrayList<Integer> participantIdList = new ArrayList<>();
+    private ArrayList<Integer> activityIdList = new ArrayList<>();
 
     public Event() {
     }
@@ -120,11 +120,38 @@ public class Event {
         this.participantIdList = participantIdList;
     }
 
+    public void addParticipant(int participantId) {
+        if (!this.participantIdList.contains(participantId)) this.participantIdList.add(participantId);
+}
+
+    public boolean isParticipant(int participantId) {
+        return this.participantIdList.contains(participantId);
+    }
+
+    public boolean deleteParticipant(int participantId) {
+        return this.participantIdList.remove(Integer.valueOf(participantId));
+    }
+
     public ArrayList<Integer> getActivityIdList() {
         return activityIdList;
     }
 
     public void setActivityIdList(ArrayList<Integer> activityIdList) {
         this.activityIdList = activityIdList;
+    }{
+        this.participantIdList = participantIdList;
     }
+
+    public void addActivity(int activityId) {
+        if (!this.activityIdList.contains(activityId)) this.activityIdList.add(activityId);
+    }
+
+    public boolean isActivity(int activityId) {
+        return this.activityIdList.contains(activityId);
+    }
+
+    public boolean deleteActivity(int activityId) {
+        return this.activityIdList.remove(Integer.valueOf(activityId));
+    }
+
 }

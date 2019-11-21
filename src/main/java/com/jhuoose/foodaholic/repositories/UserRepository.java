@@ -1,16 +1,32 @@
 package com.jhuoose.foodaholic.repositories;
 
+import com.jhuoose.foodaholic.Server;
 import com.jhuoose.foodaholic.models.User;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class UserRepository {
+    private static UserRepository ourInstance;
+
+    static {
+        try {
+            ourInstance = new UserRepository(Server.getConnection());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static UserRepository getInstance() {
+        return ourInstance;
+    }
+
     private Connection connection;
 
-    public UserRepository(Connection connection) throws SQLException {
+    private UserRepository(Connection connection) throws SQLException {
         this.connection = connection;
         var statement = connection.createStatement();
         statement.execute(
@@ -27,18 +43,26 @@ public class UserRepository {
         statement.close();
     }
 
-    public void create(User user) throws SQLException {
+    public int create(User user) throws SQLException {
         var statement = connection.prepareStatement(
                 "INSERT INTO users (email, password, userName, photoURL, phone, " +
                         "friendIdList, participatingEventIdList, notificationIdList) " +
-                        "VALUES (?, ?, ?, ?, ?, '{}', '{}', '{}')");
+                        "VALUES (?, ?, ?, ?, ?, '{}', '{}', '{}') " +
+                        "RETURNING id");
         statement.setString(1, user.getEmail());
         statement.setString(2, user.getPassword());
         statement.setString(3, user.getUserName());
         statement.setString(4, user.getPhotoURL());
         statement.setString(5, user.getPhone());
-        statement.execute();
-        statement.close();
+        var result = statement.executeQuery();
+        try {
+            result.next();
+            return result.getInt("id");
+        }
+        finally {
+            statement.close();
+            result.close();
+        }
     }
 
     public void delete(User user) throws SQLException, UserNotFoundException {
@@ -137,6 +161,64 @@ public class UserRepository {
             }
         }
         finally {
+            statement.close();
+            result.close();
+        }
+    }
+
+    public List<User> getMultiple(List<Integer> idList) throws SQLException {
+        var users = new ArrayList<User>();
+        var statement = connection.prepareStatement(
+                "SELECT * FROM users WHERE id IN (SELECT(UNNEST(?::integer[])))");
+        statement.setArray(1, connection.createArrayOf("integer", idList.toArray()));
+        var result = statement.executeQuery();
+        try {
+            while(result.next()) {
+                users.add(
+                    new User(
+                            result.getInt("id"),
+                            result.getString("email"),
+                            result.getString("password"),
+                            result.getString("userName"),
+                            result.getString("photoURL"),
+                            result.getString("phone"),
+                            new ArrayList<Integer>(Arrays.asList((Integer[]) result.getArray("friendIdList").getArray())),
+                            new ArrayList<Integer>(Arrays.asList((Integer[]) result.getArray("participatingEventIdList").getArray())),
+                            new ArrayList<Integer>(Arrays.asList((Integer[]) result.getArray("notificationIdList").getArray()))
+                    )
+                );
+            }
+            return users;
+        } finally {
+            statement.close();
+            result.close();
+        }
+    }
+
+    public List<User> getMultipleByEmail(List<String> emailList) throws SQLException {
+        var users = new ArrayList<User>();
+        var statement = connection.prepareStatement(
+                "SELECT * FROM users WHERE email IN (SELECT(UNNEST(?::text[])))");
+        statement.setArray(1, connection.createArrayOf("text", emailList.toArray()));
+        var result = statement.executeQuery();
+        try {
+            while(result.next()) {
+                users.add(
+                        new User(
+                                result.getInt("id"),
+                                result.getString("email"),
+                                result.getString("password"),
+                                result.getString("userName"),
+                                result.getString("photoURL"),
+                                result.getString("phone"),
+                                new ArrayList<Integer>(Arrays.asList((Integer[]) result.getArray("friendIdList").getArray())),
+                                new ArrayList<Integer>(Arrays.asList((Integer[]) result.getArray("participatingEventIdList").getArray())),
+                                new ArrayList<Integer>(Arrays.asList((Integer[]) result.getArray("notificationIdList").getArray()))
+                        )
+                );
+            }
+            return users;
+        } finally {
             statement.close();
             result.close();
         }

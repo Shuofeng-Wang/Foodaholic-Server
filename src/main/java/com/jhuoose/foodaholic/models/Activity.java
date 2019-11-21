@@ -9,7 +9,7 @@ public class Activity {
     private int vote;
     private float money;
     private String category;
-    private ArrayList<Integer> participantIdList;
+    private ArrayList<Integer> participantIdList = new ArrayList<>();
 
     public Activity() {
     }
@@ -48,6 +48,18 @@ public class Activity {
         this.participantIdList = participantIdList;
     }
 
+    public void addParticipant(int participantId) {
+        if (!this.participantIdList.contains(participantId)) this.participantIdList.add(participantId);
+    }
+
+    public boolean isParticipant(int participantId) {
+        return this.participantIdList.contains(participantId);
+    }
+
+    public boolean deleteParticipant(int participantId) {
+        return this.participantIdList.remove(Integer.valueOf(participantId));
+    }
+
     public String getDescription() {
         return description;
     }
@@ -62,6 +74,14 @@ public class Activity {
 
     public void setVote(int vote) {
         this.vote = vote;
+    }
+
+    public void upVote() {
+        this.vote = this.vote + 1;
+    }
+
+    public void downVote() {
+        this.vote = this.vote - 1;
     }
 
     public float getMoney() {

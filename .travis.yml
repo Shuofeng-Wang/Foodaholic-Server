@@ -7,4 +7,4 @@ before_script:
 script:
   - ./gradlew assemble
   - ./gradlew check
-  - ./gradlew run & sleep 5 && npx newman run docs/TODOOSE.postman_collection.json && kill %1
+  - ./gradlew run & sleep 5 && npx newman run docs/FOODAHOLIC.postman_collection.json && kill %1

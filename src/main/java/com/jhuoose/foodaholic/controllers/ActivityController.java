@@ -1,62 +1,70 @@
 package com.jhuoose.foodaholic.controllers;
 
 import com.jhuoose.foodaholic.models.Activity;
+import com.jhuoose.foodaholic.models.User;
+import com.jhuoose.foodaholic.repositories.*;
 import com.jhuoose.foodaholic.repositories.ActivityNotFoundException;
 import com.jhuoose.foodaholic.repositories.ActivityRepository;
-import com.jhuoose.foodaholic.repositories.ActivityNotFoundException;
-import com.jhuoose.foodaholic.repositories.ActivityRepository;
+import com.jhuoose.foodaholic.views.ActivityFullView;
+import com.jhuoose.foodaholic.views.UserProfileView;
 import io.javalin.http.Context;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class ActivityController {
+    private static ActivityController ourInstance = new ActivityController(ActivityRepository.getInstance());
+
+    public static ActivityController getInstance() {
+        return ourInstance;
+    }
+
     private ActivityRepository activityRepository;
 
     public ActivityController(ActivityRepository activityRepository) {
         this.activityRepository = activityRepository;
     }
 
-    public void create(Context ctx) throws SQLException {
-        activityRepository.create();
-        ctx.status(201);
-        ctx.json("Create Successfully!");
-    }
-
-    public void delete(Context ctx) throws SQLException, ActivityNotFoundException {
-        activityRepository.delete(activityRepository.getOne(ctx.pathParam("id", Integer.class).get()));
-        ctx.json("Delete Successfully!");
-    }
-
-    public void update(Context ctx) throws ActivityNotFoundException, SQLException {
-        var activity = activityRepository.getOne(ctx.pathParam("id", Integer.class).get());
-        var activityName = ctx.formParam("activityName", "");
-        //if(!activityName.isEmpty()) activity.setActivityName(activityName);
-    }
-
-    public void getOne(Context ctx) throws  ActivityNotFoundException, SQLException{
-        var id = ctx.pathParam("id", Integer.class);
-        var activity = activityRepository.getOne(id.get());
-        ctx.json(activity);
+    public void getActivityView(Context ctx) throws ActivityNotFoundException, SQLException{
+        var id = ctx.pathParam("id", Integer.class).get();
+        var activity = activityRepository.getOne(id);
+        var participants = UserRepository.getInstance().getMultiple(activity.getParticipantIdList());
+        var participantsProfiles = new ArrayList<UserProfileView>();
+        for (User participant : participants) participantsProfiles.add(new UserProfileView(participant));
+        ctx.json(new ActivityFullView(activity, participantsProfiles));
     }
 
     public void getAll(Context ctx) throws ActivityNotFoundException, SQLException{
         ctx.json(activityRepository.getAll());
     }
 
-    public void edit(Context ctx) throws ActivityNotFoundException, SQLException {
+    public void update(Context ctx) throws ActivityNotFoundException, SQLException {
         var activity = activityRepository.getOne(ctx.pathParam("id", Integer.class).get());
-        var activityName = ctx.formParam("activityName");
-        if(activityName != null) activity.setActivityName(activityName);
+        var activityName = ctx.formParam("activityName","");
+        if(!activityName.isEmpty()) activity.setActivityName(activityName);
         var description = ctx.formParam("description","");
         if(!description.isEmpty()) activity.setDescription(description);
         var vote = ctx.formParam("vote", Integer.class).getOrNull();
         if(vote != null) activity.setVote(vote);
         var money = ctx.formParam("money", Float.class).getOrNull();
         if(money != null) activity.setMoney(money);
-        var category = ctx.formParam("category");
-        if(category != null) activity.setCategory(category);
-        activityRepository.edit(activity);
+        var category = ctx.formParam("category", "");
+        if(!category.isEmpty()) activity.setCategory(category);
+        activityRepository.update(activity);
         ctx.status(204);
-        ctx.json("Edit Successfully!");
+    }
+
+    public void vote(Context ctx) throws ActivityNotFoundException, SQLException {
+        var activity = activityRepository.getOne(ctx.pathParam("id", Integer.class).get());
+        activity.upVote();
+        activityRepository.update(activity);
+        ctx.status(204);
+    }
+
+    public void boo(Context ctx) throws ActivityNotFoundException, SQLException {
+        var activity = activityRepository.getOne(ctx.pathParam("id", Integer.class).get());
+        activity.downVote();
+        activityRepository.update(activity);
+        ctx.status(204);
     }
 }
