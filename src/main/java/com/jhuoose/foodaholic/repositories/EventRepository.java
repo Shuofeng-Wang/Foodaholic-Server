@@ -34,6 +34,7 @@ public class EventRepository{
         statement.execute("Create Table IF NOT exists events " +
                 "(id SERIAL PRIMARY KEY, " +
                 "eventName TEXT, " +
+                "entryCode TEXT UNIQUE, " +
                 "description TEXT, " +
                 "location TEXT, " +
                 "startTime TEXT, " +
@@ -45,26 +46,25 @@ public class EventRepository{
         statement.close();
     }
 
-    public List<Event> getAll() throws EventNotFoundException, SQLException {
+    public List<Event> getAll() throws SQLException {
         var events = new ArrayList<Event>();
         var statement = connection.createStatement();
         var result = statement.executeQuery("SELECT * FROM events");
         try {
             while(result.next()) {
-                events.add(
-                    new Event(
-                            result.getInt("id"),
-                            result.getString("eventName"),
-                            result.getString("description"),
-                            result.getString("location"),
-                            result.getString("startTime"),
-                            result.getString("endTime"),
-                            result.getInt("organizerId"),
-                            result.getString("theme"),
-                            new ArrayList<Integer>(Arrays.asList((Integer[])(result.getArray("participantIdArray")).getArray())),
-                            new ArrayList<Integer>(Arrays.asList((Integer[])(result.getArray("activityIdArray")).getArray()))
-                    )
-                );
+                var event = new Event();
+                event.setId(result.getInt("id"));
+                event.setEventName(result.getString("eventName"));
+                event.setEntryCode(result.getString("entryCode"));
+                event.setDescription(result.getString("description"));
+                event.setLocation(result.getString("location"));
+                event.setStartTime(result.getString("startTime"));
+                event.setEndTime(result.getString("endTime"));
+                event.setOrganizerId(result.getInt("organizerId"));
+                event.setTheme(result.getString("theme"));
+                event.setParticipantIdList(new ArrayList<Integer>(Arrays.asList((Integer[])(result.getArray("participantIdArray")).getArray())));
+                event.setActivityIdList(new ArrayList<Integer>(Arrays.asList((Integer[])(result.getArray("activityIdArray")).getArray())));
+                events.add(event);
             }
             return events;
         } finally {
@@ -79,22 +79,47 @@ public class EventRepository{
         var result = statement.executeQuery();
         try {
             if (result.next()) {
-                //Integer[] array = (Integer[])(result.getArray("participantIdArray")).getArray();//.getClass().getSimpleName());
-                //for(Integer it :array){
-                //    System.out.println(it);
-                //}
-                return new Event(
-                        result.getInt("id"),
-                        result.getString("eventName"),
-                        result.getString("description"),
-                        result.getString("location"),
-                        result.getString("startTime"),
-                        result.getString("endTime"),
-                        result.getInt("organizerId"),
-                        result.getString("theme"),
-                        new ArrayList<Integer>(Arrays.asList((Integer[])(result.getArray("participantIdArray")).getArray())),
-                        new ArrayList<Integer>(Arrays.asList((Integer[])(result.getArray("activityIdArray")).getArray()))
-                );
+                var event = new Event();
+                event.setId(result.getInt("id"));
+                event.setEventName(result.getString("eventName"));
+                event.setEntryCode(result.getString("entryCode"));
+                event.setDescription(result.getString("description"));
+                event.setLocation(result.getString("location"));
+                event.setStartTime(result.getString("startTime"));
+                event.setEndTime(result.getString("endTime"));
+                event.setOrganizerId(result.getInt("organizerId"));
+                event.setTheme(result.getString("theme"));
+                event.setParticipantIdList(new ArrayList<Integer>(Arrays.asList((Integer[])(result.getArray("participantIdArray")).getArray())));
+                event.setActivityIdList(new ArrayList<Integer>(Arrays.asList((Integer[])(result.getArray("activityIdArray")).getArray())));
+                return event;
+            } else {
+                throw new EventNotFoundException();
+            }
+        } finally {
+            statement.close();
+            result.close();
+        }
+    }
+
+    public Event getOne(String entryCode) throws EventNotFoundException, SQLException {
+        var statement = connection.prepareStatement("SELECT * FROM events WHERE entryCode = ?");
+        statement.setString(1, entryCode);
+        var result = statement.executeQuery();
+        try {
+            if (result.next()) {
+                var event = new Event();
+                event.setId(result.getInt("id"));
+                event.setEventName(result.getString("eventName"));
+                event.setEntryCode(result.getString("entryCode"));
+                event.setDescription(result.getString("description"));
+                event.setLocation(result.getString("location"));
+                event.setStartTime(result.getString("startTime"));
+                event.setEndTime(result.getString("endTime"));
+                event.setOrganizerId(result.getInt("organizerId"));
+                event.setTheme(result.getString("theme"));
+                event.setParticipantIdList(new ArrayList<Integer>(Arrays.asList((Integer[])(result.getArray("participantIdArray")).getArray())));
+                event.setActivityIdList(new ArrayList<Integer>(Arrays.asList((Integer[])(result.getArray("activityIdArray")).getArray())));
+                return event;
             } else {
                 throw new EventNotFoundException();
             }
@@ -112,20 +137,19 @@ public class EventRepository{
         var result = statement.executeQuery();
         try {
             while(result.next()) {
-                events.add(
-                    new Event(
-                            result.getInt("id"),
-                            result.getString("eventName"),
-                            result.getString("description"),
-                            result.getString("location"),
-                            result.getString("startTime"),
-                            result.getString("endTime"),
-                            result.getInt("organizerId"),
-                            result.getString("theme"),
-                            new ArrayList<Integer>(Arrays.asList((Integer[])(result.getArray("participantIdArray")).getArray())),
-                            new ArrayList<Integer>(Arrays.asList((Integer[])(result.getArray("activityIdArray")).getArray()))
-                    )
-                );
+                var event = new Event();
+                event.setId(result.getInt("id"));
+                event.setEventName(result.getString("eventName"));
+                event.setEntryCode(result.getString("entryCode"));
+                event.setDescription(result.getString("description"));
+                event.setLocation(result.getString("location"));
+                event.setStartTime(result.getString("startTime"));
+                event.setEndTime(result.getString("endTime"));
+                event.setOrganizerId(result.getInt("organizerId"));
+                event.setTheme(result.getString("theme"));
+                event.setParticipantIdList(new ArrayList<Integer>(Arrays.asList((Integer[])(result.getArray("participantIdArray")).getArray())));
+                event.setActivityIdList(new ArrayList<Integer>(Arrays.asList((Integer[])(result.getArray("activityIdArray")).getArray())));
+                events.add(event);
             }
             return events;
         } finally {
@@ -137,18 +161,19 @@ public class EventRepository{
     public int create(Event event) throws SQLException{
         var statement = connection.prepareStatement(
                 "INSERT INTO events (" +
-                        "eventName, description, location, startTime, endTime, " +
+                        "eventName, entryCode, description, location, startTime, endTime, " +
                         "organizerId, theme, participantIdArray, activityIdArray) " +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, '{}') " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, '{}') " +
                         "RETURNING id");
         statement.setString(1, event.getEventName());
-        statement.setString(2, event.getDescription());
-        statement.setString(3, event.getLocation());
-        statement.setString(4, event.getStartTime());
-        statement.setString(5, event.getEndTime());
-        statement.setInt(6, event.getOrganizerId());
-        statement.setString(7, event.getStartTime());
-        statement.setArray(8, connection.createArrayOf("integer", event.getParticipantIdList().toArray()));
+        statement.setString(2, event.getEntryCode());
+        statement.setString(3, event.getDescription());
+        statement.setString(4, event.getLocation());
+        statement.setString(5, event.getStartTime());
+        statement.setString(6, event.getEndTime());
+        statement.setInt(7, event.getOrganizerId());
+        statement.setString(8, event.getStartTime());
+        statement.setArray(9, connection.createArrayOf("integer", event.getParticipantIdList().toArray()));
         var result = statement.executeQuery();
         try {
             result.next();

@@ -56,8 +56,8 @@ public class Server {
                                 delete(userController::deleteCurrentUser);
                                 path("events", () -> {
                                     get(userController::getParticipatingEventList);
+                                    post(userController::joinEvent);
                                     path(":id", () -> {
-                                        post(userController::joinEvent);
                                         delete(userController::leaveEvent);
                                     });
                                 });
@@ -91,6 +91,9 @@ public class Server {
                                 delete(eventController::delete);
                                 get(eventController::getEventView);
                                 put(eventController::update);
+                                path("entryCode", () -> {
+                                    get(eventController::getEntryCode);
+                                });
                                 path("activities", () -> {
                                     get(eventController::getActivityList);
                                     post(eventController::createActivity);

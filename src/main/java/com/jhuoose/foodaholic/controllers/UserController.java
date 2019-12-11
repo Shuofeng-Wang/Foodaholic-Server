@@ -91,10 +91,10 @@ public class UserController {
     }
 
     public void joinEvent(Context ctx) throws SQLException, UserNotFoundException, EventNotFoundException {
-        var eventId = ctx.pathParam("id", Integer.class).get();
-        var event = EventRepository.getInstance().getOne(eventId);
+        var entryCode = ctx.formParam("entryCode", "");
+        var event = EventRepository.getInstance().getOne(entryCode);
         var user = userRepository.getOne(currentUserId(ctx));
-        user.addParticipatingEvent(eventId);
+        user.addParticipatingEvent(event.getId());
         userRepository.update(user);
         event.addParticipant(currentUserId(ctx));
         EventRepository.getInstance().update(event);

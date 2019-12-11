@@ -8,11 +8,13 @@ import com.jhuoose.foodaholic.views.ActivityProfileView;
 import com.jhuoose.foodaholic.views.EventFullView;
 import com.jhuoose.foodaholic.views.UserProfileView;
 import io.javalin.http.Context;
+import io.javalin.http.ForbiddenResponse;
 
 
 import java.rmi.activation.ActivationSystem;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class EventController{
     private static EventController ourInstance = new EventController(EventRepository.getInstance());
@@ -31,6 +33,7 @@ public class EventController{
         int currentUserId = UserController.currentUserId(ctx);
         var event = new Event();
         event.setEventName(ctx.formParam("eventName", "").isEmpty() ? "New Event" : ctx.formParam("eventName", ""));
+        event.setEntryCode(UUID.randomUUID().toString().replaceAll("-", ""));
         event.setDescription(ctx.formParam("description", ""));
         event.setLocation(ctx.formParam("location", ""));
         event.setStartTime(ctx.formParam("startTime", ""));
@@ -62,6 +65,14 @@ public class EventController{
         var activityProfiles = new ArrayList<ActivityProfileView>();
         for (Activity activity : activities) activityProfiles.add(new ActivityProfileView(activity));
         ctx.json(new EventFullView(event, organizerProfile, participantsProfiles, activityProfiles));
+    }
+
+    public void getEntryCode(Context ctx) throws SQLException, EventNotFoundException {
+        var id = ctx.pathParam("id", Integer.class);
+        var event = eventRepository.getOne(id.get());
+        if (event.getOrganizerId() != UserController.currentUserId(ctx))
+            throw new ForbiddenResponse();
+        ctx.result(event.getEntryCode());
     }
 
     public void getAll(Context ctx) throws SQLException, EventNotFoundException {

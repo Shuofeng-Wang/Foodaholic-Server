@@ -1,12 +1,11 @@
 package com.jhuoose.foodaholic.models;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Event {
-
     private int id;
     private String eventName;
+    private String entryCode;
     private String description;
     private String location;
     private String startTime; //to Date
@@ -17,19 +16,6 @@ public class Event {
     private ArrayList<Integer> activityIdList = new ArrayList<>();
 
     public Event() {
-    }
-
-    public Event(int id, String eventName, String description, String location, String startTime, String endTime, int organizerId, String theme, ArrayList<Integer> participantIdList, ArrayList<Integer> activityIdList) {
-        this.id = id;
-        this.eventName = eventName;
-        this.description = description;
-        this.location = location;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.organizerId = organizerId;
-        this.theme = theme;
-        this.participantIdList = participantIdList;
-        this.activityIdList = activityIdList;
     }
 
     @Override
@@ -62,6 +48,14 @@ public class Event {
 
     public void setEventName(String eventName) {
         this.eventName = eventName;
+    }
+
+    public String getEntryCode() {
+        return entryCode;
+    }
+
+    public void setEntryCode(String entryCode) {
+        this.entryCode = entryCode;
     }
 
     public String getDescription() {
