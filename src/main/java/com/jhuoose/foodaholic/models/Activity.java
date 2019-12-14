@@ -7,21 +7,15 @@ public class Activity {
     private String activityName;
     private String description;
     private int vote;
-    private float money;
+    private double money;
     private String category;
+    private int eventId;
+    private ArrayList<Integer> voteIdList = new ArrayList<>();
+    private ArrayList<Integer> booIdList = new ArrayList<>();
     private ArrayList<Integer> participantIdList = new ArrayList<>();
+    private int payerId;
 
     public Activity() {
-    }
-
-    public Activity(int id, String activityName, String description, int vote, float money, String category, ArrayList<Integer> participantIdList) {
-        this.id = id;
-        this.activityName = activityName;
-        this.description = description;
-        this.vote = vote;
-        this.money = money;
-        this.category = category;
-        this.participantIdList = participantIdList;
     }
 
     public int getId() {
@@ -84,11 +78,11 @@ public class Activity {
         this.vote = this.vote - 1;
     }
 
-    public float getMoney() {
+    public double getMoney() {
         return money;
     }
 
-    public void setMoney(float money) {
+    public void setMoney(double money) {
         this.money = money;
     }
 
@@ -98,5 +92,61 @@ public class Activity {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public int getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(int eventId) {
+        this.eventId = eventId;
+    }
+
+    public ArrayList<Integer> getVoteIdList() {
+        return voteIdList;
+    }
+
+    public void setVoteIdList(ArrayList<Integer> voteIdList) {
+        this.voteIdList = voteIdList;
+    }
+
+    public void addVoteId(int voteId) {
+        if (!this.voteIdList.contains(voteId)) this.voteIdList.add(voteId);
+    }
+
+    public boolean isVoteId(int voteId) {
+        return this.voteIdList.contains(voteId);
+    }
+
+    public boolean deleteVoteId(int voteId) {
+        return this.voteIdList.remove(Integer.valueOf(voteId));
+    }
+
+    public ArrayList<Integer> getBooIdList() {
+        return booIdList;
+    }
+
+    public void setBooIdList(ArrayList<Integer> booIdList) {
+        this.booIdList = booIdList;
+    }
+
+    public void addBooId(int booId) {
+        if (!this.booIdList.contains(booId)) this.booIdList.add(booId);
+    }
+
+    public boolean isBooId(int booId) {
+        return this.booIdList.contains(booId);
+    }
+
+    public boolean deleteBooId(int booId) {
+        return this.booIdList.remove(Integer.valueOf(booId));
+    }
+
+    public int getPayerId() {
+        return payerId;
+    }
+
+    public void setPayerId(int payerId) {
+        this.payerId = payerId;
     }
 }

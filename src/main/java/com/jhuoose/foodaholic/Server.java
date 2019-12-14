@@ -47,6 +47,7 @@ public class Server {
             var userController = UserController.getInstance();
             var eventController = EventController.getInstance();
             var activityController = ActivityController.getInstance();
+            var notificationRepository = NotificationRepository.getInstance();
             Javalin.create(config -> { config.addStaticFiles("/public"); })
                     .events(event -> {
                         event.serverStopped(() -> { connection.close(); });
@@ -71,7 +72,10 @@ public class Server {
                                     });
                                 });
                                 path("notifications", () -> {
-//                                    get(userController::getNotificationList);
+                                    get(userController::getNotificationList);
+                                    path(":id", () -> {
+                                        delete(userController::removeNotification);
+                                    });
                                 });
                                 path("friends", () -> {
                                     get(userController::getFriendList);
@@ -104,12 +108,18 @@ public class Server {
                                     get(eventController::getEntryCode);
                                     post(eventController::sendEntryCodeToOne);
                                 });
+                                path("organizer", () -> {
+                                    get(eventController::getOrganizer);
+                                });
                                 path("activities", () -> {
                                     get(eventController::getActivityList);
                                     post(eventController::createActivity);
                                     path(":activityId", () -> {
                                         delete(eventController::deleteActivity);
                                     });
+                                });
+                                path("split", () -> {
+                                    post(eventController::splitBill);
                                 });
                             });
                         });
@@ -122,6 +132,10 @@ public class Server {
                                 });
                                 path("boo", () -> {
                                     put(activityController::boo);
+                                });
+                                path("participate", () -> {
+                                    post(activityController::join);
+                                    delete(activityController::leave);
                                 });
                             });
                         });

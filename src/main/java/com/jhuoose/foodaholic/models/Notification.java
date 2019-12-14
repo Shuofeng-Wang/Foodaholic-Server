@@ -6,6 +6,7 @@ public class Notification {
     private int id;
     private Date time;
     private String category;
+    private String title;
     private String content;
 
     public Notification() {
@@ -33,6 +34,14 @@ public class Notification {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getContent() {

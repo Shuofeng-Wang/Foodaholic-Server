@@ -1,11 +1,9 @@
 package com.jhuoose.foodaholic.controllers;
 
 import com.jhuoose.foodaholic.models.Event;
+import com.jhuoose.foodaholic.models.Notification;
 import com.jhuoose.foodaholic.models.User;
-import com.jhuoose.foodaholic.repositories.EventNotFoundException;
-import com.jhuoose.foodaholic.repositories.EventRepository;
-import com.jhuoose.foodaholic.repositories.UserNotFoundException;
-import com.jhuoose.foodaholic.repositories.UserRepository;
+import com.jhuoose.foodaholic.repositories.*;
 import com.jhuoose.foodaholic.views.EventProfileView;
 import com.jhuoose.foodaholic.views.UserFullView;
 import com.jhuoose.foodaholic.views.UserProfileView;
@@ -73,7 +71,8 @@ public class UserController {
         var friends = userRepository.getMultiple(user.getFriendIdList());
         var friendProfiles = new ArrayList<UserProfileView>();
         for (User friend : friends) friendProfiles.add(new UserProfileView(friend));
-        ctx.json(new UserFullView(user, friendProfiles, eventProfiles));
+        var notifications = NotificationRepository.getInstance().getMultiple(user.getNotificationIdList());
+        ctx.json(new UserFullView(user, friendProfiles, eventProfiles, (ArrayList<Notification>) notifications));
     }
 
     public void deleteCurrentUser(Context ctx) throws SQLException, UserNotFoundException {
@@ -112,11 +111,19 @@ public class UserController {
         ctx.status(204);
     }
 
-//    public void getNotificationList();
-//
-//    public void addNotification();
-//
-//    public void deleteNotification();
+    public void getNotificationList(Context ctx) throws SQLException, UserNotFoundException {
+        var user = userRepository.getOne(currentUserId(ctx));
+        var friends = NotificationRepository.getInstance().getMultiple(user.getNotificationIdList());
+        ctx.json(friends);
+    }
+
+    public void removeNotification(Context ctx) throws SQLException, UserNotFoundException {
+        var notificationId = ctx.pathParam("id", Integer.class).get();
+        var user = userRepository.getOne(currentUserId(ctx));
+        user.deleteNotification(notificationId);
+        userRepository.update(user);
+        ctx.status(204);
+    }
 
     public void getFriendList(Context ctx) throws SQLException, UserNotFoundException {
         var user = userRepository.getOne(currentUserId(ctx));

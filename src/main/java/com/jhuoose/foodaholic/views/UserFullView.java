@@ -1,5 +1,6 @@
 package com.jhuoose.foodaholic.views;
 
+import com.jhuoose.foodaholic.models.Notification;
 import com.jhuoose.foodaholic.models.User;
 
 import java.util.ArrayList;
@@ -12,12 +13,12 @@ public class UserFullView {
     private String phone;
     private ArrayList<UserProfileView> friendList = new ArrayList<>();
     private ArrayList<EventProfileView> participatingEventList = new ArrayList<>();
-    private ArrayList<Integer> notificationList = new ArrayList<>(); //TODO: to be changed to NotificationProfileView
+    private ArrayList<Notification> notificationList = new ArrayList<>();
 
     public UserFullView(User user,
                         ArrayList<UserProfileView> friendList,
-                        ArrayList<EventProfileView> participatingEventList
-            /*, ArrayList<NotificationProfileView> notificationList */) {
+                        ArrayList<EventProfileView> participatingEventList,
+                        ArrayList<Notification> notificationList) {
         this.id = user.getId();
         this.email = user.getEmail();
         this.userName = user.getUserName();
@@ -25,7 +26,7 @@ public class UserFullView {
         this.phone = user.getPhone();
         this.friendList = friendList;
         this.participatingEventList = participatingEventList;
-        this.notificationList = user.getNotificationIdList(); // = notificationList
+        this.notificationList = notificationList;
     }
 
     public int getId() {
@@ -84,11 +85,11 @@ public class UserFullView {
         this.participatingEventList = participatingEventList;
     }
 
-    public ArrayList<Integer> getNotificationList() {
+    public ArrayList<Notification> getNotificationList() {
         return notificationList;
     }
 
-    public void setNotificationList(ArrayList<Integer> notificationList) {
+    public void setNotificationList(ArrayList<Notification> notificationList) {
         this.notificationList = notificationList;
     }
 }

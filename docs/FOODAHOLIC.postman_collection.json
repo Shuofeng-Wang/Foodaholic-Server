@@ -1736,6 +1736,11 @@
 							"key": "description",
 							"value": "testDescription",
 							"type": "text"
+						},
+						{
+							"key": "money",
+							"value": "2.4",
+							"type": "text"
 						}
 					]
 				},
@@ -1880,7 +1885,7 @@
 						"id": "1f28be8a-b12f-4544-ab1f-05458edd4a96",
 						"exec": [
 							"pm.test(\"Activity is added and participated\", () => {",
-							"    pm.expect(pm.response.json()).to.have.all.keys(\"id\", \"activityName\", \"description\", \"vote\", \"money\", \"category\", \"participantList\");",
+							"    pm.expect(pm.response.json()).to.have.all.keys(\"id\", \"activityName\", \"description\", \"vote\", \"money\", \"category\", \"event\", \"voteList\", \"booList\", \"participantList\", \"payer\");",
 							"});",
 							"",
 							"pm.test(\"Item is edited\", () => {",
@@ -1916,88 +1921,6 @@
 					],
 					"port": "4000",
 					"path": [
-						"activities",
-						"{{activityId}}"
-					]
-				}
-			},
-			"response": [
-				{
-					"name": "Successful",
-					"originalRequest": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "description",
-									"value": "whatever",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "http://localhost:7000/items/7",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "7000",
-							"path": [
-								"items",
-								"7"
-							]
-						}
-					},
-					"status": "No Content",
-					"code": 204,
-					"_postman_previewlanguage": "Text",
-					"header": [],
-					"cookie": [],
-					"body": ""
-				}
-			]
-		},
-		{
-			"name": "Delete activity",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"id": "1f28be8a-b12f-4544-ab1f-05458edd4a96",
-						"exec": [
-							"pm.test(\"Status code is 204\", function () {",
-							"    pm.response.to.have.status(204);",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				},
-				{
-					"listen": "prerequest",
-					"script": {
-						"id": "1f042eff-532a-4075-84f7-e8397e6b5393",
-						"exec": [
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:4000/events/{{eventId}}/activities/{{activityId}}",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "4000",
-					"path": [
-						"events",
-						"{{eventId}}",
 						"activities",
 						"{{activityId}}"
 					]
@@ -2309,15 +2232,188 @@
 			]
 		},
 		{
-			"name": "Leave event",
+			"name": "Join activity",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"id": "1f28be8a-b12f-4544-ab1f-05458edd4a96",
 						"exec": [
-							"pm.test(\"Status code is 204\", () => {",
+							"pm.test(\"Status code is 204\", function () {",
 							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "1f042eff-532a-4075-84f7-e8397e6b5393",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:4000/activities/{{activityId}}/participate",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"activities",
+						"{{activityId}}",
+						"participate"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Successful",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "description",
+									"value": "whatever",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:7000/items/7",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "7000",
+							"path": [
+								"items",
+								"7"
+							]
+						}
+					},
+					"status": "No Content",
+					"code": 204,
+					"_postman_previewlanguage": "Text",
+					"header": [],
+					"cookie": [],
+					"body": ""
+				}
+			]
+		},
+		{
+			"name": "Create activity Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1f28be8a-b12f-4544-ab1f-05458edd4a96",
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "1f042eff-532a-4075-84f7-e8397e6b5393",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "activityName",
+							"value": "testActivity2",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:4000/events/{{eventId}}/activities",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"events",
+						"{{eventId}}",
+						"activities"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Successful",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "description",
+									"value": "whatever",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:7000/items/7",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "7000",
+							"path": [
+								"items",
+								"7"
+							]
+						}
+					},
+					"status": "No Content",
+					"code": 204,
+					"_postman_previewlanguage": "Text",
+					"header": [],
+					"cookie": [],
+					"body": ""
+				}
+			]
+		},
+		{
+			"name": "Get activity list Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1f28be8a-b12f-4544-ab1f-05458edd4a96",
+						"exec": [
+							"pm.test(\"Activity is added \", () => {",
+							"    pm.expect(pm.response.json()[1].activityName).to.include(\"testActivity2\");",
+							"    pm.environment.set(\"activityId2\", pm.response.json()[1].id);",
 							"});",
 							""
 						],
@@ -2336,20 +2432,114 @@
 				}
 			],
 			"request": {
-				"method": "DELETE",
+				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:4000/users/current/events/{{eventId}}",
+					"raw": "http://localhost:4000/events/{{eventId}}/activities",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "4000",
 					"path": [
-						"users",
-						"current",
 						"events",
-						"{{eventId}}"
+						"{{eventId}}",
+						"activities"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Successful",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "description",
+									"value": "whatever",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:7000/items/7",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "7000",
+							"path": [
+								"items",
+								"7"
+							]
+						}
+					},
+					"status": "No Content",
+					"code": 204,
+					"_postman_previewlanguage": "Text",
+					"header": [],
+					"cookie": [],
+					"body": ""
+				}
+			]
+		},
+		{
+			"name": "Edit activity Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1f28be8a-b12f-4544-ab1f-05458edd4a96",
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "1f042eff-532a-4075-84f7-e8397e6b5393",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "description",
+							"value": "testDescription2",
+							"type": "text"
+						},
+						{
+							"key": "money",
+							"value": "3.6",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:4000/activities/{{activityId2}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"activities",
+						"{{activityId2}}"
 					]
 				}
 			},
@@ -2525,6 +2715,334 @@
 					"path": [
 						"users",
 						"login"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Successful",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "description",
+									"value": "whatever",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:7000/items/7",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "7000",
+							"path": [
+								"items",
+								"7"
+							]
+						}
+					},
+					"status": "No Content",
+					"code": 204,
+					"_postman_previewlanguage": "Text",
+					"header": [],
+					"cookie": [],
+					"body": ""
+				}
+			]
+		},
+		{
+			"name": "Split the bill",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1f28be8a-b12f-4544-ab1f-05458edd4a96",
+						"exec": [
+							"pm.test(\"Status code is 201\", () => {",
+							"    pm.response.to.have.status(201);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "1f042eff-532a-4075-84f7-e8397e6b5393",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:4000/events/{{eventId}}/split",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"events",
+						"{{eventId}}",
+						"split"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Successful",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "description",
+									"value": "whatever",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:7000/items/7",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "7000",
+							"path": [
+								"items",
+								"7"
+							]
+						}
+					},
+					"status": "No Content",
+					"code": 204,
+					"_postman_previewlanguage": "Text",
+					"header": [],
+					"cookie": [],
+					"body": ""
+				}
+			]
+		},
+		{
+			"name": "Get notifications",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1f28be8a-b12f-4544-ab1f-05458edd4a96",
+						"exec": [
+							"pm.test(\"Notification is added\", () => {",
+							"    pm.expect(pm.response.json()[0].content).to.include(\"The event testEvent is over. Participants shall pay to each other as below: \\nFoodaholicer<testFriend> shall give Haoran<testUser> $1.2.\");",
+							"    pm.environment.set(\"notificationId\", pm.response.json()[0].id);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "1f042eff-532a-4075-84f7-e8397e6b5393",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:4000/users/current/notifications",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"users",
+						"current",
+						"notifications"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Successful",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "description",
+									"value": "whatever",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:7000/items/7",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "7000",
+							"path": [
+								"items",
+								"7"
+							]
+						}
+					},
+					"status": "No Content",
+					"code": 204,
+					"_postman_previewlanguage": "Text",
+					"header": [],
+					"cookie": [],
+					"body": ""
+				}
+			]
+		},
+		{
+			"name": "Remove notifications",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1f28be8a-b12f-4544-ab1f-05458edd4a96",
+						"exec": [
+							"pm.test(\"Notification is added and participated\", () => {",
+							"    pm.expect(pm.response.json()[0].content).to.include(\"The event testEvent is over. Participants shall pay to each other as below: \\nFoodaholicer<testFriend> shall give Haoran<testUser> $1.2.\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "1f042eff-532a-4075-84f7-e8397e6b5393",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:4000/users/current/notifications",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"users",
+						"current",
+						"notifications"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Successful",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "description",
+									"value": "whatever",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:7000/items/7",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "7000",
+							"path": [
+								"items",
+								"7"
+							]
+						}
+					},
+					"status": "No Content",
+					"code": 204,
+					"_postman_previewlanguage": "Text",
+					"header": [],
+					"cookie": [],
+					"body": ""
+				}
+			]
+		},
+		{
+			"name": "Delete activity",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1f28be8a-b12f-4544-ab1f-05458edd4a96",
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "1f042eff-532a-4075-84f7-e8397e6b5393",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:4000/events/{{eventId}}/activities/{{activityId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"events",
+						"{{eventId}}",
+						"activities",
+						"{{activityId}}"
 					]
 				}
 			},

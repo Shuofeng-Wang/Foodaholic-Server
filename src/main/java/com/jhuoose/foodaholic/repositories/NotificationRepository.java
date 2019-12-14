@@ -34,6 +34,7 @@ public class NotificationRepository {
                 "id SERIAL PRIMARY KEY, " +
                 "time TIMESTAMP WITH TIME ZONE, " +
                 "category TEXT, " +
+                "title TEXT, " +
                 "content TEXT)");
         statement.close();
     }
@@ -49,6 +50,7 @@ public class NotificationRepository {
                 notification.setTime(result.getTimestamp("time"));
                 notification.setCategory(result.getString("category"));
                 notification.setContent(result.getString("content"));
+                notification.setTitle(result.getString("title"));
                 notifications.add(notification);
             }
             return notifications;
@@ -69,6 +71,7 @@ public class NotificationRepository {
                 notification.setTime(result.getTimestamp("time"));
                 notification.setCategory(result.getString("category"));
                 notification.setContent(result.getString("content"));
+                notification.setTitle(result.getString("title"));
                 return notification;
             } else {
                 throw new NotificationNotFoundException();
@@ -92,6 +95,7 @@ public class NotificationRepository {
                 notification.setTime(result.getTimestamp("time"));
                 notification.setCategory(result.getString("category"));
                 notification.setContent(result.getString("content"));
+                notification.setTitle(result.getString("title"));
                 notifications.add(notification);
             }
             return notifications;
@@ -103,12 +107,13 @@ public class NotificationRepository {
 
     public int create(Notification notification) throws SQLException{
         var statement = connection.prepareStatement("INSERT INTO notifications (" +
-                "time, category, content) " +
-                "VALUES (?, ?, ?) " +
+                "time, category, title, content) " +
+                "VALUES (?, ?, ?, ?) " +
                 "RETURNING id");
-        statement.setTimestamp(1, (Timestamp) notification.getTime());
+        statement.setTimestamp(1, new Timestamp(notification.getTime().getTime()));
         statement.setString(2, notification.getCategory());
-        statement.setString(3, notification.getContent());
+        statement.setString(3, notification.getTitle());
+        statement.setString(4, notification.getContent());
         var result = statement.executeQuery();
         try {
             result.next();
@@ -128,8 +133,8 @@ public class NotificationRepository {
         var statement = connection.prepareStatement("DELETE from notifications WHERE id = ?");
         statement.setInt(1, id);
         try {
-            if(statement.executeUpdate() == 0) throw new ActivityNotFoundException();
-        } catch (ActivityNotFoundException e) {
+            if(statement.executeUpdate() == 0) throw new NotificationNotFoundException();
+        } catch (NotificationNotFoundException e) {
             e.printStackTrace();
         } finally{
             statement.close();
@@ -137,11 +142,12 @@ public class NotificationRepository {
     }
 
     public void update(Notification notification) throws SQLException, NotificationNotFoundException {
-        var statement = connection.prepareStatement("UPDATE notifications SET time = ?, category = ?, content = ? WHERE id = ?");
-        statement.setTimestamp(1, (Timestamp) notification.getTime());
+        var statement = connection.prepareStatement("UPDATE notifications SET time = ?, category = ?, title = ?, content = ? WHERE id = ?");
+        statement.setTimestamp(1, new Timestamp(notification.getTime().getTime()));
         statement.setString(2, notification.getCategory());
-        statement.setString(3, notification.getContent());
-        statement.setInt(4, notification.getId());
+        statement.setString(3, notification.getTitle());
+        statement.setString(4, notification.getContent());
+        statement.setInt(5, notification.getId());
         try {
             if(statement.executeUpdate() == 0) throw new NotificationNotFoundException();
         }

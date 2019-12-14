@@ -7,7 +7,7 @@ public class ActivityProfileView {
     private String activityName;
     private String description;
     private int vote;
-    private float money;
+    private double money;
     private String category;
 
     public ActivityProfileView(Activity activity) {
@@ -51,11 +51,11 @@ public class ActivityProfileView {
         this.vote = vote;
     }
 
-    public float getMoney() {
+    public double getMoney() {
         return money;
     }
 
-    public void setMoney(float money) {
+    public void setMoney(double money) {
         this.money = money;
     }
 

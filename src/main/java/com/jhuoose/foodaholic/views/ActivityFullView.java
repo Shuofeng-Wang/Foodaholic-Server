@@ -9,19 +9,34 @@ public class ActivityFullView {
     private String activityName;
     private String description;
     private int vote;
-    private float money;
+    private double money;
     private String category;
+    private EventProfileView event;
+    private ArrayList<UserProfileView> voteList = new ArrayList<>();
+    private ArrayList<UserProfileView> booList = new ArrayList<>();
     private ArrayList<UserProfileView> participantList = new ArrayList<>();
+    private UserProfileView payer;
+
+    public ActivityFullView() {
+    }
 
     public ActivityFullView(Activity activity,
-                            ArrayList<UserProfileView> participantList) {
+                            EventProfileView event,
+                            ArrayList<UserProfileView> voteList,
+                            ArrayList<UserProfileView> booList,
+                            ArrayList<UserProfileView> participantList,
+                            UserProfileView payer) {
         this.id = activity.getId();
         this.activityName = activity.getActivityName();
         this.description = activity.getDescription();
         this.vote = activity.getVote();
         this.money = activity.getMoney();
         this.category = activity.getCategory();
+        this.event = event;
+        this.voteList = voteList;
+        this.booList = booList;
         this.participantList = participantList;
+        this.payer = payer;
     }
 
     public int getId() {
@@ -56,11 +71,11 @@ public class ActivityFullView {
         this.vote = vote;
     }
 
-    public float getMoney() {
+    public double getMoney() {
         return money;
     }
 
-    public void setMoney(float money) {
+    public void setMoney(double money) {
         this.money = money;
     }
 
@@ -78,5 +93,37 @@ public class ActivityFullView {
 
     public void setParticipantList(ArrayList<UserProfileView> participantList) {
         this.participantList = participantList;
+    }
+
+    public EventProfileView getEvent() {
+        return event;
+    }
+
+    public void setEvent(EventProfileView event) {
+        this.event = event;
+    }
+
+    public ArrayList<UserProfileView> getVoteList() {
+        return voteList;
+    }
+
+    public void setVoteList(ArrayList<UserProfileView> voteList) {
+        this.voteList = voteList;
+    }
+
+    public ArrayList<UserProfileView> getBooList() {
+        return booList;
+    }
+
+    public void setBooList(ArrayList<UserProfileView> booList) {
+        this.booList = booList;
+    }
+
+    public UserProfileView getPayer() {
+        return payer;
+    }
+
+    public void setPayer(UserProfileView payer) {
+        this.payer = payer;
     }
 }
