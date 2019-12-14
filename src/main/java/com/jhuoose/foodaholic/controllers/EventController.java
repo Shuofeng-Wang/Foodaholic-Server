@@ -4,6 +4,7 @@ import com.jhuoose.foodaholic.models.Activity;
 import com.jhuoose.foodaholic.models.Event;
 import com.jhuoose.foodaholic.models.User;
 import com.jhuoose.foodaholic.repositories.*;
+import com.jhuoose.foodaholic.utils.EmailUtil;
 import com.jhuoose.foodaholic.views.ActivityProfileView;
 import com.jhuoose.foodaholic.views.EventFullView;
 import com.jhuoose.foodaholic.views.UserProfileView;
@@ -11,6 +12,7 @@ import io.javalin.http.Context;
 import io.javalin.http.ForbiddenResponse;
 
 
+import java.io.IOException;
 import java.rmi.activation.ActivationSystem;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -73,6 +75,23 @@ public class EventController{
         if (event.getOrganizerId() != UserController.currentUserId(ctx))
             throw new ForbiddenResponse();
         ctx.result(event.getEntryCode());
+    }
+
+    public void sendEntryCodeToOne(Context ctx) throws SQLException, UserNotFoundException, EventNotFoundException, IOException {
+        int currentUserId = UserController.currentUserId(ctx);
+        var currentUser = UserRepository.getInstance().getOne(currentUserId);
+        var id = ctx.pathParam("id", Integer.class);
+        var event = eventRepository.getOne(id.get());
+        var email = ctx.formParam("guestEmail", "");
+        String subject = "Entry code to event " + event.getEventName();
+        String content = "Dear Friend, \n\n" +
+                "You are invited to the event " + event.getEventName() +
+                " by " + currentUser.getUserName() + "<" + currentUser.getEmail() + ">. " +
+                "The entry code to this event is: " + event.getEntryCode() + ". " +
+                "You can now join the event in the Foodaholic app. \n\n" +
+                "Sincerely, \n\nFoodaholic Team";
+        EmailUtil.getInstance().sendEmailToOne(subject, email, content);
+        ctx.status(201);
     }
 
     public void getAll(Context ctx) throws SQLException, EventNotFoundException {

@@ -1,10 +1,15 @@
 package com.jhuoose.foodaholic.models;
 
+import java.util.Date;
+
 public class Notification {
     private int id;
-    private int sendUserId;
-    private int recieveUserId;
+    private Date time;
+    private String category;
     private String content;
+
+    public Notification() {
+    }
 
     public int getId() {
         return id;
@@ -14,20 +19,20 @@ public class Notification {
         this.id = id;
     }
 
-    public int getSendUserId() {
-        return sendUserId;
+    public Date getTime() {
+        return time;
     }
 
-    public void setSendUserId(int sendUserId) {
-        this.sendUserId = sendUserId;
+    public void setTime(Date time) {
+        this.time = time;
     }
 
-    public int getRecieveUserId() {
-        return recieveUserId;
+    public String getCategory() {
+        return category;
     }
 
-    public void setRecieveUserId(int recieveUserId) {
-        this.recieveUserId = recieveUserId;
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public String getContent() {
