@@ -160,8 +160,9 @@ public class UserController {
 
     public void updateCurrentUserProfile(Context ctx) throws SQLException, UserNotFoundException {
         var user = userRepository.getOne(currentUserId(ctx));
-        if (!ctx.formParam("email", "").isEmpty()) {
-            if (userRepository.isEmailExist(ctx.formParam("email", ""))) {
+        var email = ctx.formParam("email", "");
+        if (!email.isEmpty()) {
+            if (!user.getEmail().equals(email) && userRepository.isEmailExist(ctx.formParam("email", ""))) {
                 throw new ForbiddenResponse("Email already exists");
             }
             user.setEmail(ctx.formParam("email", ""));
