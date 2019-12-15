@@ -147,7 +147,7 @@ public class EventController{
         activity.setCategory(ctx.formParam("category", ""));
         activity.setEventId(eventId);
         activity.addParticipant(currentUserId);
-        activity.setPayerId(ctx.formParam("payerId", Integer.class).getOrNull() == null ? currentUserId : ctx.pathParam("payerId", Integer.class).get());
+        activity.setPayerId(ctx.formParam("payerId", Integer.class).getOrNull() == null ? currentUserId : ctx.formParam("payerId", Integer.class).get());
         var activityId = ActivityRepository.getInstance().create(activity);
         event.addActivity(activityId);
         eventRepository.update(event);
