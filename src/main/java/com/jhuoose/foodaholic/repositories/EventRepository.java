@@ -172,7 +172,7 @@ public class EventRepository{
         statement.setString(5, event.getStartTime());
         statement.setString(6, event.getEndTime());
         statement.setInt(7, event.getOrganizerId());
-        statement.setString(8, event.getStartTime());
+        statement.setString(8, event.getTheme());
         statement.setArray(9, connection.createArrayOf("integer", event.getParticipantIdList().toArray()));
         var result = statement.executeQuery();
         try {

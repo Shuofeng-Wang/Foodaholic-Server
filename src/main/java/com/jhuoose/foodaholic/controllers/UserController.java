@@ -168,8 +168,8 @@ public class UserController {
             user.setEmail(ctx.formParam("email", ""));
         }
         if (!ctx.formParam("userName", "").isEmpty()) user.setUserName(ctx.formParam("userName", ""));
-        if (!ctx.formParam("photoURL", "").isEmpty()) user.setPhotoURL(ctx.formParam("userName", ""));
-        if (!ctx.formParam("phone", "").isEmpty()) user.setPhone(ctx.formParam("userName", ""));
+        if (!ctx.formParam("photoURL", "").isEmpty()) user.setPhotoURL(ctx.formParam("photoURL", ""));
+        if (!ctx.formParam("phone", "").isEmpty()) user.setPhone(ctx.formParam("phone", ""));
         userRepository.update(user);
         ctx.status(204);
     }
