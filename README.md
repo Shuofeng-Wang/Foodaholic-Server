@@ -10,7 +10,7 @@ Server side for [Foodaholic](https://github.com/jhu-oose/2019-group-foodaholic)
 
 ## Architecture
 
-Foodaholic is a mobile application. It’s divided in two components, the [server](#server), and the [client in the master branch]( https://github.com/jhu-oose/2019-group-foodaholic/tree/master ). It uses the tools including [Javalin](https://www.jhu-oose.com/toolbox/#web-server-javalin), [PostgreSQL Database](https://www.postgresql.org/), Postman, [Retrofit](https://square.github.io/retrofit/), [Android Studio](https://developer.android.com/studio), and other tools in the [Toolbox](https://www.jhu-oose.com/toolbox/). 
+Foodaholic is a mobile application. It’s divided in two components, the [server](#server), and the [client in the master branch]( https://github.com/jhu-oose/2019-group-foodaholic/tree/master ). It uses the tools including [Javalin](https://www.jhu-oose.com/toolbox/#web-server-javalin), [PostgreSQL Database](https://www.postgresql.org/), [Postman](https://www.postman.com/), [Retrofit](https://square.github.io/retrofit/), [Android Studio](https://developer.android.com/studio), and other tools in the [Toolbox](https://www.jhu-oose.com/toolbox/). 
 
 ## Server
 
